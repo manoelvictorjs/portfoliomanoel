@@ -3,11 +3,12 @@ export type FloatingTechBadge = {
   label: string;
   name: string;
   color: string;
-  /** Tailwind position classes */
+  /** Tailwind position classes (hero / editor) */
   position: string;
-  /** Animation delay in seconds */
+  /** Posição % para trilha cobrinha na página (opcional) */
+  x?: number;
+  y?: number;
   delay: number;
-  /** Float duration in seconds */
   duration: number;
   size?: "sm" | "md";
 };
@@ -167,14 +168,19 @@ export const editorCodeSnippets = [
   { text: "EXPOSE 3000", position: "absolute top-1/2 -right-2 lg:-right-8", delay: 1, color: "#2496ed" },
 ] as const;
 
-/** Badges espalhados pela altura da página (fundo decorativo) */
-export const pageFloatingBadges: FloatingTechBadge[] = [
+/**
+ * Trilha da cobrinha no scroll — ordem = percurso (começa em TS).
+ * x/y em % do container (0–100).
+ */
+export const pageSnakeTrail: FloatingTechBadge[] = [
   {
     id: "page-ts",
     label: "TS",
     name: "TypeScript",
     color: "#3178c6",
-    position: "left-[5%] top-[6%]",
+    position: "",
+    x: 8,
+    y: 7,
     delay: 0,
     duration: 5.2,
   },
@@ -183,7 +189,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "JS",
     name: "JavaScript",
     color: "#f7df1e",
-    position: "right-[6%] top-[10%]",
+    position: "",
+    x: 92,
+    y: 11,
     delay: 0.4,
     duration: 5.6,
   },
@@ -192,7 +200,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "⚛",
     name: "React 19",
     color: "#61dafb",
-    position: "right-[4%] top-[22%]",
+    position: "",
+    x: 94,
+    y: 24,
     delay: 0.8,
     duration: 6,
     size: "sm",
@@ -202,7 +212,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "Go",
     name: "Go",
     color: "#00ADD8",
-    position: "left-[3%] top-[26%]",
+    position: "",
+    x: 6,
+    y: 28,
     delay: 0.2,
     duration: 5.8,
     size: "sm",
@@ -212,7 +224,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "🐳",
     name: "Docker",
     color: "#2496ed",
-    position: "left-[7%] top-[38%]",
+    position: "",
+    x: 10,
+    y: 40,
     delay: 1,
     duration: 6.2,
   },
@@ -221,7 +235,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "Node",
     name: "Node.js",
     color: "#68a063",
-    position: "right-[8%] top-[34%]",
+    position: "",
+    x: 90,
+    y: 36,
     delay: 0.6,
     duration: 5.4,
     size: "sm",
@@ -231,7 +247,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "🐧",
     name: "Linux",
     color: "#facc15",
-    position: "right-[3%] top-[48%]",
+    position: "",
+    x: 94,
+    y: 50,
     delay: 1.2,
     duration: 6.5,
   },
@@ -240,7 +258,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "N",
     name: "Next.js",
     color: "#ededed",
-    position: "left-[4%] top-[52%]",
+    position: "",
+    x: 8,
+    y: 54,
     delay: 0.5,
     duration: 5.6,
     size: "sm",
@@ -250,7 +270,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "PG",
     name: "PostgreSQL",
     color: "#336791",
-    position: "left-[10%] top-[64%]",
+    position: "",
+    x: 14,
+    y: 66,
     delay: 1.4,
     duration: 6.4,
     size: "sm",
@@ -260,7 +282,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "API",
     name: "REST",
     color: "#2dd4bf",
-    position: "right-[10%] top-[58%]",
+    position: "",
+    x: 88,
+    y: 60,
     delay: 0.9,
     duration: 5.8,
     size: "sm",
@@ -270,7 +294,9 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "✓",
     name: "Vitest",
     color: "#a78bfa",
-    position: "right-[5%] top-[72%]",
+    position: "",
+    x: 92,
+    y: 74,
     delay: 1.6,
     duration: 6,
     size: "sm",
@@ -280,12 +306,17 @@ export const pageFloatingBadges: FloatingTechBadge[] = [
     label: "AI",
     name: "LLM",
     color: "#c084fc",
-    position: "left-[6%] top-[78%]",
+    position: "",
+    x: 10,
+    y: 80,
     delay: 0.3,
     duration: 5.5,
     size: "sm",
   },
 ];
+
+/** @deprecated use pageSnakeTrail */
+export const pageFloatingBadges = pageSnakeTrail;
 
 export const pageFloatingSnippets = [
   { text: "{ strict: true }", position: "left-[14%] top-[14%]", delay: 0, color: "#3178c6" },

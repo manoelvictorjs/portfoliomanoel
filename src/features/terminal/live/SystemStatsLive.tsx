@@ -9,7 +9,6 @@ export function SystemStatsLive() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setPhase("loading");
     const es = new EventSource("/api/system-stats/stream");
 
     es.onmessage = (ev) => {

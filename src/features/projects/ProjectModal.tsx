@@ -12,12 +12,14 @@ type Props = {
   onClose: () => void;
 };
 
-export function ProjectModal({ project, onClose }: Props) {
+function ProjectModalPanel({
+  project,
+  onClose,
+}: {
+  project: Project;
+  onClose: () => void;
+}) {
   const [tab, setTab] = useState<ProjectTab>("business");
-
-  useEffect(() => {
-    if (project) setTab("business");
-  }, [project]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -26,15 +28,13 @@ export function ProjectModal({ project, onClose }: Props) {
   }, [onClose]);
 
   return (
-    <AnimatePresence>
-      {project && (
-        <motion.div
-          className="fixed inset-0 z-[70] flex items-end justify-center p-4 sm:items-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={fadeFast}
-        >
+    <motion.div
+      className="fixed inset-0 z-[70] flex items-end justify-center p-4 sm:items-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={fadeFast}
+    >
           <button
             type="button"
             className="absolute inset-0 bg-black/75 backdrop-blur-md"
@@ -172,8 +172,16 @@ export function ProjectModal({ project, onClose }: Props) {
               </motion.div>
             </AnimatePresence>
           </motion.div>
-        </motion.div>
-      )}
+    </motion.div>
+  );
+}
+
+export function ProjectModal({ project, onClose }: Props) {
+  return (
+    <AnimatePresence>
+      {project ? (
+        <ProjectModalPanel key={project.id} project={project} onClose={onClose} />
+      ) : null}
     </AnimatePresence>
   );
 }

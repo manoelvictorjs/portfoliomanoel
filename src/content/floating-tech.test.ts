@@ -12,11 +12,11 @@ describe("floating-tech badges", () => {
     expect(ids).toContain("js");
   });
 
-  it("page badges cover full scroll depth", () => {
+  it("page snake trail starts at TS with coordinates", () => {
     expect(pageFloatingBadges.length).toBeGreaterThanOrEqual(10);
-    const tops = pageFloatingBadges.map((b) => b.position);
-    expect(tops.some((p) => p.includes("top-[6%]"))).toBe(true);
-    expect(tops.some((p) => p.includes("top-[7"))).toBe(true);
+    expect(pageFloatingBadges[0]?.id).toBe("page-ts");
+    expect(pageFloatingBadges[0]?.x).toBeDefined();
+    expect(pageFloatingBadges[0]?.y).toBeDefined();
   });
 
   it("editor badges have unique ids", () => {

@@ -57,7 +57,10 @@ export function InteractiveTerminal({
   onInjected,
 }: Props) {
   const bootCtx = useBootOptional();
-  const boot = bootCtx?.boot ?? (() => {});
+  const bootFn = bootCtx?.boot;
+  const boot = useCallback(() => {
+    bootFn?.();
+  }, [bootFn]);
   const { tick, blip } = useSound();
   const [expanded, setExpanded] = useState(embedded ?? false);
   const [history, setHistory] = useState<HistoryEntry[]>([WELCOME]);
@@ -210,8 +213,8 @@ export function InteractiveTerminal({
 
   useEffect(() => {
     if (!injectedCommand) return;
-    setExpanded(true);
     const t = window.setTimeout(() => {
+      setExpanded(true);
       typeThenRun(injectedCommand);
       onInjected?.();
     }, 40);

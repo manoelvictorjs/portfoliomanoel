@@ -23,6 +23,7 @@ export {
   heroFloatingBadges,
   editorFloatingBadges,
   pageFloatingBadges,
+  pageSnakeTrail,
   floatingCodeSnippets,
   pageFloatingSnippets,
   editorCodeSnippets,

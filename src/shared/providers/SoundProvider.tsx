@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -20,12 +19,13 @@ type SoundContextValue = {
 const SoundContext = createContext<SoundContextValue | null>(null);
 const STORAGE_KEY = "portfolio-sound-muted";
 
-export function SoundProvider({ children }: { children: ReactNode }) {
-  const [muted, setMuted] = useState(true);
+function readMutedFromStorage(): boolean {
+  if (typeof window === "undefined") return true;
+  return localStorage.getItem(STORAGE_KEY) === "1";
+}
 
-  useEffect(() => {
-    setMuted(localStorage.getItem(STORAGE_KEY) === "1");
-  }, []);
+export function SoundProvider({ children }: { children: ReactNode }) {
+  const [muted, setMuted] = useState(readMutedFromStorage);
 
   const toggleMute = useCallback(() => {
     setMuted((m) => {

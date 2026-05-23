@@ -105,8 +105,14 @@ export function AnimatedCodeEditor() {
   }, [sample.lines.length]);
 
   useEffect(() => {
-    const cleanup = runTyping();
-    return cleanup;
+    let stopTyping = () => {};
+    const t = window.setTimeout(() => {
+      stopTyping = runTyping();
+    }, 0);
+    return () => {
+      window.clearTimeout(t);
+      stopTyping();
+    };
   }, [lang, runTyping]);
 
   useEffect(() => {
