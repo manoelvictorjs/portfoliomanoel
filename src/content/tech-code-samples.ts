@@ -1,0 +1,146 @@
+export type CodeLang = "typescript" | "javascript" | "go";
+
+export type CodeSample = {
+  lang: CodeLang;
+  label: string;
+  file: string;
+  accent: string;
+  glow: string;
+  lines: { text: string; delay?: number }[];
+};
+
+export const codeSamples: CodeSample[] = [
+  {
+    lang: "typescript",
+    label: "TypeScript",
+    file: "invert-tree.ts",
+    accent: "#3178c6",
+    glow: "rgba(49, 120, 198, 0.45)",
+    lines: [
+      { text: "type TreeNode<T> = {" },
+      { text: "  val: T;" },
+      { text: "  left: TreeNode<T> | null;" },
+      { text: "  right: TreeNode<T> | null;" },
+      { text: "};" },
+      { text: "" },
+      { text: "type ApiResult<T> =" },
+      { text: '  | { ok: true; data: T }' },
+      { text: '  | { ok: false; error: string };' },
+      { text: "" },
+      { text: "function invertTree<T>(root: TreeNode<T> | null) {" },
+      { text: "  if (!root) return null;" },
+      { text: "  const q: TreeNode<T>[] = [root];" },
+      { text: "  while (q.length) {" },
+      { text: "    const n = q.shift()!;" },
+      { text: "    [n.left, n.right] = [n.right, n.left];" },
+      { text: "    if (n.left) q.push(n.left);" },
+      { text: "    if (n.right) q.push(n.right);" },
+      { text: "  }" },
+      { text: "  return root satisfies TreeNode<T> | null;" },
+      { text: "}" },
+      { text: "" },
+      { text: "// generics + union + satisfies → tsc --strict ✓" },
+    ],
+  },
+  {
+    lang: "javascript",
+    label: "JavaScript",
+    file: "invert-tree.js",
+    accent: "#f7df1e",
+    glow: "rgba(247, 223, 30, 0.35)",
+    lines: [
+      { text: "/** Inverte árvore binária — iterativo O(n) */" },
+      { text: "function invertTree(root) {" },
+      { text: "  if (!root) return null;" },
+      { text: "  const stack = [root];" },
+      { text: "  while (stack.length) {" },
+      { text: "    const node = stack.pop();" },
+      { text: "    [node.left, node.right] = [node.right, node.left];" },
+      { text: "    if (node.left) stack.push(node.left);" },
+      { text: "    if (node.right) stack.push(node.right);" },
+      { text: "  }" },
+      { text: "  return root;" },
+      { text: "}" },
+      { text: "" },
+      { text: "/** Versão recursiva (DFS) — elegante e legível */" },
+      { text: "const invertRecursive = (node) => {" },
+      { text: "  if (!node) return null;" },
+      { text: "  [node.left, node.right] = [node.right, node.left];" },
+      { text: "  invertRecursive(node.left);" },
+      { text: "  invertRecursive(node.right);" },
+      { text: "  return node;" },
+      { text: "};" },
+    ],
+  },
+  {
+    lang: "go",
+    label: "Go",
+    file: "invert_tree.go",
+    accent: "#00ADD8",
+    glow: "rgba(0, 173, 216, 0.4)",
+    lines: [
+      { text: "package main" },
+      { text: "" },
+      { text: "type TreeNode struct {" },
+      { text: "  Val   int" },
+      { text: "  Left  *TreeNode" },
+      { text: "  Right *TreeNode" },
+      { text: "}" },
+      { text: "" },
+      { text: "// Go: poucas linhas, legível, sem boilerplate" },
+      { text: "func invertTree(root *TreeNode) *TreeNode {" },
+      { text: "  if root == nil {" },
+      { text: "    return nil" },
+      { text: "  }" },
+      { text: "  root.Left, root.Right = root.Right, root.Left" },
+      { text: "  invertTree(root.Left)" },
+      { text: "  invertTree(root.Right)" },
+      { text: "  return root" },
+      { text: "}" },
+      { text: "" },
+      { text: "// go run .  →  compila rápido, deploy simples" },
+    ],
+  },
+];
+
+export const infraExamples = [
+  {
+    title: "Linux · VPS",
+    icon: "🐧",
+    color: "#facc15",
+    file: "deploy.sh",
+    lines: [
+      "$ ssh user@vps",
+      "$ cd /var/www/app",
+      "$ docker compose pull",
+      "$ docker compose up -d",
+      "$ curl -I localhost → 200 OK",
+    ],
+  },
+  {
+    title: "Docker",
+    icon: "🐳",
+    color: "#2496ed",
+    file: "Dockerfile",
+    lines: [
+      "FROM node:22-alpine AS build",
+      "WORKDIR /app",
+      "COPY package*.json ./",
+      "RUN npm ci && npm run build",
+      "EXPOSE 3000",
+      "CMD [\"node\", \"server.js\"]",
+    ],
+  },
+] as const;
+
+export const techMarqueeItems = [
+  { label: "TypeScript", color: "#3178c6" },
+  { label: "JavaScript", color: "#f7df1e" },
+  { label: "Go", color: "#00ADD8" },
+  { label: "Linux", color: "#facc15" },
+  { label: "Docker", color: "#2496ed" },
+  { label: "Node.js", color: "#68a063" },
+  { label: "React 19", color: "#61dafb" },
+  { label: "Next.js", color: "#ededed" },
+  { label: "REST APIs", color: "#2dd4bf" },
+] as const;

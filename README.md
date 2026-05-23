@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Living Dev Environment — Portfólio
 
-## Getting Started
+Portfólio interativo baseado no conceito **Ambiente de Desenvolvimento Vivo**: terminal real, pipeline de skills, vitrine de projetos estilo VPS, animações com física de mola e foco em Lighthouse, segurança e testes.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router)
+- **Tailwind CSS v4**
+- **Framer Motion**
+- Canvas 2D para rede de partículas (Three.js disponível para evolução futura)
+
+## Começar
 
 ```bash
+cp .env.example .env.local
+# Edite nome, e-mail e URLs do GitHub
+
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Comandos do terminal
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Comando | Ação |
+|---------|------|
+| `help` | Lista comandos |
+| `skills` | Rola até o pipeline |
+| `projects` | Rola até projetos |
+| `docker-compose up` | Boot simulado + painel Healthy |
+| `clear` | Limpa o terminal |
+| `whoami` | Resumo rápido |
 
-## Learn More
+## Estrutura
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/          # rotas + API
+├── content/      # dados estáticos (projetos, perfil, terminal)
+├── features/     # UI por domínio (hero, skills, terminal…)
+├── shared/       # layout, ui, animações, providers
+├── lib/          # terminal (domínio) + server (infra)
+└── types/        # contratos TypeScript
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Detalhes em [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Testes e CI
 
-## Deploy on Vercel
+```bash
+npm run test        # 44 testes unitários (content, terminal, server)
+npm run test:watch
+npm run build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Badge **Tests: Passing** no rodapé — aponte `NEXT_PUBLIC_CI_BADGE_URL` para o Actions do seu repositório.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy
+
+Recomendado: [Vercel](https://vercel.com). O projeto usa SSG na home e rota `/api/profile` para o mock HTTP.
+
+---
+
+## Prompt de esboço visual (Seção 6 — IA de imagem/UI)
+
+Use em Midjourney, DALL·E, Figma AI ou similar:
+
+```
+Ultra-wide dark UI mockup, premium code editor aesthetic, portfolio website "The Living Dev Environment".
+Deep charcoal background (#050608) with fine cyan grid lines, subtle particle network connecting API nodes in hero.
+Minimal monospace typography, floating terminal window bottom-right with macOS traffic lights, green prompt cursor.
+Center: bold developer name, subtitle "Full Stack · DevOps · IA".
+Second section: microservices pipeline diagram, glowing cables between tech nodes (Docker blue, Node green, Linux amber, AI purple).
+Third section: GitHub-style repo cards inside VPS terminal, tabs Overview / Tech Stack / Logs.
+Neon hover glow per technology color, glassmorphism panels, high contrast, no clutter.
+Style: cinematic, 4K, Behance-quality devtool branding, matte texture, restrained cyan accent — NOT generic corporate blue.
+Aspect ratio 16:9, flat UI design, Figma-ready layers implied.
+```
+
+Variante curta:
+
+```
+Dark developer portfolio UI, living IDE theme, particle API network hero, interactive terminal, CI/CD skills map with neon cables, GitHub VPS project section, monospace, cyan accents, premium Behance mockup 16:9
+```

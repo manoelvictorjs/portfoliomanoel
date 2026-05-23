@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#064e3b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2dd4bf"/>
+      <stop offset="100%" style="stop-color:#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="750" fill="url(#bg)"/>
+  <rect x="80" y="60" width="200" height="12" rx="6" fill="url(#accent)" opacity="0.9"/>
+  <text x="80" y="120" fill="#f8fafc" font-family="system-ui,sans-serif" font-size="42" font-weight="700">RM Ecope�as</text>
+  <text x="80" y="165" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="22">Autope�as � Cat�logo online</text>
+  <rect x="80" y="200" width="480" height="44" rx="22" fill="#1e293b" stroke="#334155"/>
+  <text x="110" y="230" fill="#64748b" font-family="system-ui,sans-serif" font-size="18">Buscar pe�as, SKU, categoria&</text>
+  <g opacity="0.85">
+    <rect x="80" y="280" width="260" height="180" rx="12" fill="#1e293b"/>
+    <rect x="360" y="280" width="260" height="180" rx="12" fill="#1e293b"/>
+    <rect x="640" y="280" width="260" height="180" rx="12" fill="#1e293b"/>
+    <rect x="920" y="280" width="200" height="180" rx="12" fill="#1e293b"/>
+  </g>
+  <rect x="80" y="500" width="160" height="36" rx="8" fill="#2dd4bf" opacity="0.25"/>
+  <text x="100" y="524" fill="#5eead4" font-family="system-ui,sans-serif" font-size="14" font-weight="600">Mercado Livre sync</text>
+  <text x="80" y="680" fill="#475569" font-family="system-ui,sans-serif" font-size="16">www.rmecope�as.com.br � Em produ��o</text>
+</svg>
