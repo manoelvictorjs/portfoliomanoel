@@ -21,8 +21,8 @@ type Props = {
 
 export function SkillDetailCard({ skill, expanded, onToggle }: Props) {
   const { preferLightEffects } = useDeviceProfile();
-  const reduced = useReducedMotion();
-  const light = preferLightEffects || reduced;
+  const reducedMotion = useReducedMotion() ?? false;
+  const light = preferLightEffects || reducedMotion;
   const { transform, onMouseMove, onMouseLeave } = useTilt3D({
     ...TILT_PRESETS.card,
     disabled: light,
@@ -92,9 +92,9 @@ export function SkillDetailCard({ skill, expanded, onToggle }: Props) {
         {expanded && (
           <motion.div
             key="panel"
-            initial={{ opacity: 0, height: 0, rotateX: reduced ? 0 : -4 }}
+            initial={{ opacity: 0, height: 0, rotateX: reducedMotion ? 0 : -4 }}
             animate={{ opacity: 1, height: "auto", rotateX: 0 }}
-            exit={{ opacity: 0, height: 0, rotateX: reduced ? 0 : -4 }}
+            exit={{ opacity: 0, height: 0, rotateX: reducedMotion ? 0 : -4 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
             style={{ transformStyle: "preserve-3d" }}

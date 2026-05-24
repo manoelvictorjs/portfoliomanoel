@@ -17,8 +17,8 @@ type Props = {
 
 export function ProfileCard({ introDone = true }: Props) {
   const { preferLightEffects } = useDeviceProfile();
-  const reduced = useReducedMotion();
-  const light = preferLightEffects || reduced;
+  const reducedMotion = useReducedMotion() ?? false;
+  const light = preferLightEffects || reducedMotion;
   const { transform, onMouseMove, onMouseLeave } = useTilt3D({
     ...TILT_PRESETS.profile,
     disabled: light,
@@ -26,10 +26,12 @@ export function ProfileCard({ introDone = true }: Props) {
 
   return (
     <motion.div
-      initial={reduced ? { opacity: 0, y: 32 } : { opacity: 0, y: 32, rotateX: 12, rotateY: -6 }}
+      initial={
+        reducedMotion ? { opacity: 0, y: 32 } : { opacity: 0, y: 32, rotateX: 12, rotateY: -6 }
+      }
       animate={
         introDone
-          ? reduced
+          ? reducedMotion
             ? { opacity: 1, y: 0 }
             : { opacity: 1, y: 0, rotateX: 0, rotateY: 0 }
           : { opacity: 0, y: 40 }

@@ -197,10 +197,10 @@ export function PageFloatingTech({ scrollRoot }: Props) {
 
     const root = scrollRoot.current;
     const ro =
-      root && typeof ResizeObserver !== "undefined"
+      typeof ResizeObserver !== "undefined"
         ? new ResizeObserver(() => syncFromScroll())
         : null;
-    ro?.observe(root);
+    if (root && ro) ro.observe(root);
 
     return () => {
       cancelAnimationFrame(frameId);

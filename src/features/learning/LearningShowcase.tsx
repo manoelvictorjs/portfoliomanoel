@@ -8,8 +8,11 @@ import {
 import { CompileSection } from "@/shared/ui/CompileSection";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
 
+const aluraCourseCount = aluraTracks.reduce((n, t) => n + t.courses.length, 0);
+
 const aluraSummary = aluraTracks
-  .flatMap((t) => t.courses.map((c) => c.name))
+  .flatMap((t) => [...t.courses])
+  .map((c) => c.name)
   .slice(0, 8)
   .join(" · ");
 
@@ -57,7 +60,7 @@ export function LearningShowcase() {
                 <span className="font-medium text-zinc-200">Alura — </span>
                 Trilhas de fundamentos, APIs, Linux, Docker, Node e Next.js. Destaques:{" "}
                 {aluraSummary}
-                {aluraTracks.flatMap((t) => t.courses).length > 8 ? "…" : ""}
+                {aluraCourseCount > 8 ? "…" : ""}
               </li>
             </ul>
           </section>
