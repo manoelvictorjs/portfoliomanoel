@@ -2,6 +2,7 @@
 
 import { useBoot } from "@/shared/providers/BootProvider";
 import { profile } from "@/content/profile";
+import { ResumeDownloadButton } from "@/shared/ui/ResumeDownloadButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -72,6 +73,11 @@ export function SiteNav() {
           </ul>
 
           <div className="flex items-center gap-2">
+            <ResumeDownloadButton
+              variant="ghost"
+              className="hidden px-4! py-2! text-xs md:inline-flex"
+              showIcon={false}
+            />
             <a href="#contact" className="btn-primary hidden rounded-full px-5 py-2.5 text-sm sm:inline-flex">
               Contato
             </a>
@@ -118,13 +124,19 @@ export function SiteNav() {
                   {link.label}
                 </motion.a>
               ))}
-              <a
-                href="#contact"
-                onClick={() => setMenuOpen(false)}
-                className="btn-primary mt-4 rounded-xl px-4 py-3 text-center text-sm"
-              >
-                Falar comigo
-              </a>
+              <div className="mt-4 flex flex-col gap-2">
+                <ResumeDownloadButton
+                  variant="primary"
+                  className="w-full rounded-xl! py-3!"
+                />
+                <a
+                  href="#contact"
+                  onClick={() => setMenuOpen(false)}
+                  className="btn-ghost rounded-xl px-4 py-3 text-center text-sm"
+                >
+                  Falar comigo
+                </a>
+              </div>
             </motion.div>
           </motion.div>
         )}

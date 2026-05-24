@@ -2,6 +2,7 @@
 
 import { useSound } from "@/shared/providers/SoundProvider";
 import { MagneticButton } from "@/shared/ui/MagneticButton";
+import { triggerResumeDownload } from "@/lib/resume/download";
 import { safeOpenExternalUrl } from "@/lib/security/safe-open";
 import { executeCommand, formatPrompt } from "@/lib/terminal/engine";
 import { renderOutput } from "@/lib/terminal/outputs";
@@ -99,6 +100,21 @@ export function InteractiveTerminal({
             },
           ]);
         });
+      }
+
+      if (result.downloadResume && !triggerResumeDownload()) {
+        setHistory((prev) => [
+          ...prev,
+          {
+            output: {
+              kind: "text",
+              lines: [
+                "Currículo indisponível. Coloque o PDF em public/curriculo-manoel-victor.pdf",
+              ],
+            },
+            type: "error",
+          },
+        ]);
       }
 
       if (result.openUrl && !safeOpenExternalUrl(result.openUrl)) {

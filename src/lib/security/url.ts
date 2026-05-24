@@ -60,6 +60,15 @@ export function isSafeProjectLiveUrl(href: string): boolean {
   return isSafeHttpsUrl(href);
 }
 
+/** PDF do currículo — path local em /public ou URL HTTPS pública. */
+export function isSafeResumeHref(href: string): boolean {
+  const trimmed = href.trim();
+  if (trimmed.startsWith("/")) {
+    return /^\/[\w.-]+\.pdf$/i.test(trimmed) && !trimmed.includes("..");
+  }
+  return isSafeHttpsUrl(trimmed);
+}
+
 /** Origem HTTPS do proxy VPS — sem path, sem credenciais, sem rede interna. */
 export function resolveVpsApiOrigin(rawBase: string | undefined): string | null {
   const raw = rawBase?.trim();

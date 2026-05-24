@@ -29,6 +29,13 @@ export const profile = {
   ciBadgeUrl:
     process.env.NEXT_PUBLIC_CI_BADGE_URL ??
     `https://github.com/${defaults.githubUsername}/${defaults.portfolioRepo}/actions`,
+  /** Path em /public ou URL HTTPS (NEXT_PUBLIC_RESUME_URL) */
+  resumePath:
+    process.env.NEXT_PUBLIC_RESUME_URL?.trim() ||
+    "/curriculo-manoel-victor.pdf",
+  resumeFilename:
+    process.env.NEXT_PUBLIC_RESUME_FILENAME?.trim() ||
+    "Manoel-Victor-Curriculo.pdf",
 };
 
 export function getAge(referenceYear = new Date().getFullYear()): number {

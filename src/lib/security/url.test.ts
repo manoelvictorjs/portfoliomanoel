@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   isAllowedVpsPath,
   isPrivateOrLocalHost,
+  isSafeResumeHref,
   isSafeTerminalOpenUrl,
   resolveVpsApiOrigin,
 } from "./url";
@@ -35,6 +36,12 @@ describe("security/url", () => {
     expect(
       resolveVpsApiOrigin("https://monitor.example.com/admin"),
     ).toBeNull();
+  });
+
+  it("allows safe resume paths", () => {
+    expect(isSafeResumeHref("/curriculo-manoel-victor.pdf")).toBe(true);
+    expect(isSafeResumeHref("/../etc/passwd")).toBe(false);
+    expect(isSafeResumeHref("javascript:x")).toBe(false);
   });
 
   it("allowlists VPS paths", () => {

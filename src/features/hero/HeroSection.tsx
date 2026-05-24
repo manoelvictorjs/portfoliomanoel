@@ -12,6 +12,7 @@ import { Hero3DStage } from "@/features/hero/Hero3DStage";
 import { ProfileCard } from "@/features/hero/ProfileCard";
 import { useDeviceProfile } from "@/hooks/useDeviceProfile";
 import { useBoot } from "@/shared/providers/BootProvider";
+import { ResumeDownloadButton } from "@/shared/ui/ResumeDownloadButton";
 import { ScrollButton } from "@/shared/ui/ScrollButton";
 import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "@/lib/motion";
@@ -69,6 +70,7 @@ export function HeroSection() {
             <ScrollButton href={`#${SITE_SECTIONS.projects}`} variant="primary">
               Ver projetos
             </ScrollButton>
+            <ResumeDownloadButton variant="ghost" />
             <ScrollButton href={`#${SITE_SECTIONS.techDomain}`} variant="link">
               Stack & código
             </ScrollButton>

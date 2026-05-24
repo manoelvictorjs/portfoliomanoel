@@ -2,6 +2,7 @@
 
 import { profile } from "@/content/profile";
 import { ContactCapsules } from "@/features/contact/ContactCapsules";
+import { ResumeDownloadCard } from "@/shared/ui/ResumeDownloadButton";
 import { ContactSocialBackdrop } from "@/features/contact/ContactSocialBackdrop";
 import { CompileSection } from "@/shared/ui/CompileSection";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
@@ -25,6 +26,8 @@ export function SiteFooter() {
             subtitle="Escolha o canal que preferir — resposta rápida e conversa direta, sem burocracia."
             align="center"
           />
+
+          <ResumeDownloadCard />
 
           <motion.div
             variants={fadeUp}

@@ -31,6 +31,11 @@ describe("executeCommand", () => {
     expect(result.openUrl).toMatch(/linkedin/i);
   });
 
+  it("curriculo triggers resume download", () => {
+    const result = executeCommand("curriculo", baseCtx);
+    expect(result.downloadResume).toBe(true);
+  });
+
   it("projetos returns projects list and scroll", () => {
     const result = executeCommand("projetos", baseCtx);
     expect(result.action).toBe("scroll-projects");

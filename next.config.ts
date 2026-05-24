@@ -43,7 +43,16 @@ const securityHeaders = [
     : []),
 ];
 
+/** Hosts extras em `npm run dev` (celular na rede, VirtualBox, etc.) */
+const allowedDevOrigins = [
+  "192.168.56.1",
+  ...(process.env.ALLOWED_DEV_ORIGINS?.split(",")
+    .map((o) => o.trim())
+    .filter(Boolean) ?? []),
+];
+
 const nextConfig: NextConfig = {
+  allowedDevOrigins,
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
