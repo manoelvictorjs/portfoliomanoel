@@ -40,10 +40,22 @@ function parseDockerLine(line: string): DockerStatRow | null {
   }
 }
 
+const isVercel = Boolean(process.env.VERCEL);
+
 export async function getDockerStats(): Promise<DockerStatsPayload> {
   const vps = await fetchFromVps<DockerStatsPayload>("/docker/stats");
   if (vps?.containers?.length) {
     return { ...vps, source: "vps", timestamp: new Date().toISOString() };
+  }
+
+  if (isVercel) {
+    return {
+      source: "unavailable",
+      containers: [],
+      timestamp: new Date().toISOString(),
+      message:
+        "Telemetria Docker disponível via VPS_API_BASE_URL (monitor na VPS).",
+    };
   }
 
   try {
@@ -74,14 +86,15 @@ export async function getDockerStats(): Promise<DockerStatsPayload> {
       containers,
       timestamp: new Date().toISOString(),
     };
-  } catch (err) {
-    const msg =
-      err instanceof Error ? err.message : "Docker daemon indisponível";
+  } catch {
     return {
       source: "unavailable",
       containers: [],
       timestamp: new Date().toISOString(),
-      message: `${msg}. Deploy o monitor na VPS (server/vps-monitor).`,
+      message:
+        process.env.NODE_ENV === "production"
+          ? "Docker indisponível neste ambiente."
+          : "Docker daemon indisponível. Use VPS_API_BASE_URL ou server/vps-monitor.",
     };
   }
 }

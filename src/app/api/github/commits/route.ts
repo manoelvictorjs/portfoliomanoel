@@ -38,10 +38,10 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         ok: false,
-        error: "GITHUB_REPO não configurado",
+        error: "repository_not_configured",
         commits: [] as GitCommit[],
       },
-      { status: 400 },
+      { status: 503 },
     );
   }
 
@@ -61,8 +61,8 @@ export async function GET(request: Request) {
 
   if (!res.ok) {
     return NextResponse.json(
-      { ok: false, error: `GitHub API ${res.status}`, commits: [] },
-      { status: res.status },
+      { ok: false, error: "upstream_unavailable", commits: [] },
+      { status: 502 },
     );
   }
 

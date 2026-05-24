@@ -14,6 +14,7 @@ import { PingLive } from "@/features/terminal/live/PingLive";
 import { SiteStatusLive } from "@/features/terminal/live/SiteStatusLive";
 import { SystemStatsLive } from "@/features/terminal/live/SystemStatsLive";
 import { TestReportLive } from "@/features/terminal/live/TestReportLive";
+import { isSafeProjectLiveUrl } from "@/lib/security/url";
 import type { OutputComponentId } from "./types";
 
 type OutputProps = Record<string, unknown>;
@@ -156,23 +157,33 @@ function ProjectsListOutput() {
 
   return (
     <ul className="space-y-3">
-      {withLive.map((p) => (
-        <li
-          key={p.id}
-          className="rounded-lg border border-white/10 bg-white/[0.03] p-3"
-        >
-          <p className="font-medium text-white">{p.displayName}</p>
-          <p className="mt-1 text-[11px] text-zinc-500">{p.tagline}</p>
-          <a
-            href={p.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-block text-[11px] text-cyan-400 hover:underline"
+      {withLive.map((p) => {
+        const liveUrl = p.liveUrl ?? "";
+        const safeLive = isSafeProjectLiveUrl(liveUrl);
+        return (
+          <li
+            key={p.id}
+            className="rounded-lg border border-white/10 bg-white/[0.03] p-3"
           >
-            Abrir site ao vivo →
-          </a>
-        </li>
-      ))}
+            <p className="font-medium text-white">{p.displayName}</p>
+            <p className="mt-1 text-[11px] text-zinc-500">{p.tagline}</p>
+            {safeLive ? (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block text-[11px] text-cyan-400 hover:underline"
+              >
+                Abrir site ao vivo →
+              </a>
+            ) : (
+              <p className="mt-2 text-[11px] text-zinc-500">
+                Link ao vivo indisponível (URL inválida).
+              </p>
+            )}
+          </li>
+        );
+      })}
       <li className="text-[11px] text-zinc-500">
         Digite <span className="text-zinc-400">projetos</span> de novo ou role até
         #projects na página.

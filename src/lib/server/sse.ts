@@ -15,8 +15,11 @@ export function createSseStream(
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify(data)}\n\n`),
           );
-        } catch (e) {
-          const message = e instanceof Error ? e.message : "stream error";
+        } catch {
+          const message =
+            process.env.NODE_ENV === "production"
+              ? "stream_error"
+              : "stream error";
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({ error: true, message })}\n\n`,

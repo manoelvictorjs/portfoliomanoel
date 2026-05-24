@@ -67,15 +67,19 @@ export function ContactSocialBackdrop() {
             transition={preferLightEffects ? undefined : { duration: 0.7, delay: icon.delay }}
           >
             {preferLightEffects ? (
-              <Image
-                src={icon.src}
-                alt=""
-                width={icon.size}
-                height={icon.size}
-                sizes={`${icon.size}px`}
-                className="object-contain opacity-[0.07] md:opacity-[0.09]"
-                draggable={false}
-              />
+              <span
+                className="relative block opacity-[0.07] md:opacity-[0.09]"
+                style={{ width: icon.size, height: icon.size }}
+              >
+                <Image
+                  src={icon.src}
+                  alt=""
+                  fill
+                  sizes={`${icon.size}px`}
+                  className="object-contain"
+                  draggable={false}
+                />
+              </span>
             ) : (
               <motion.div
                 animate={{ y: [0, -10, 0] }}
@@ -86,15 +90,19 @@ export function ContactSocialBackdrop() {
                 }}
                 className="opacity-[0.07] blur-[0.5px] transition-opacity duration-300 md:opacity-[0.09]"
               >
-                <Image
-                  src={icon.src}
-                  alt=""
-                  width={icon.size}
-                  height={icon.size}
-                  sizes={`${icon.size}px`}
-                  className="object-contain"
-                  draggable={false}
-                />
+                <span
+                  className="relative block"
+                  style={{ width: icon.size, height: icon.size }}
+                >
+                  <Image
+                    src={icon.src}
+                    alt=""
+                    fill
+                    sizes={`${icon.size}px`}
+                    className="object-contain"
+                    draggable={false}
+                  />
+                </span>
               </motion.div>
             )}
           </motion.div>

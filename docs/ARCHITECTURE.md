@@ -65,4 +65,4 @@ Cobertura: `content/`, `lib/terminal/`, `lib/server/`.
 - `/api/ping`, `/api/profile`
 - `/api/system-stats`, `/api/system-stats/stream`
 - `/api/docker/stats`, `/api/docker/stats/stream`
-- `/api/github/commits`, `/api/agent/chat`, `/api/tests/report`
+- `/api/github/commits`, `/api/tests/report`

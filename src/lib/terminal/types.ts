@@ -28,13 +28,10 @@ export type TerminalAction =
   | "clear"
   | "scroll-skills"
   | "scroll-learning"
-  | "scroll-projects"
-  | "ai-agent-start"
-  | "ai-agent-stop";
+  | "scroll-projects";
 
 export type CommandContext = {
   sessionHistory: string[];
-  agentMode?: boolean;
 };
 
 export type CommandResult = {

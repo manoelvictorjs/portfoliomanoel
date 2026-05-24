@@ -57,14 +57,15 @@ export function ContactCapsules() {
           className={`glass-card group flex flex-col rounded-[var(--radius-lg)] border bg-gradient-to-br p-6 ${link.accent}`}
         >
           <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/30">
-            <Image
-              src={link.icon}
-              alt=""
-              width={32}
-              height={32}
-              className="h-8 w-8 object-contain"
-              style={{ width: "auto", height: "auto" }}
-            />
+            <span className="relative h-8 w-8">
+              <Image
+                src={link.icon}
+                alt=""
+                fill
+                sizes="32px"
+                className="object-contain"
+              />
+            </span>
           </span>
           <h3 className="font-display mt-5 text-lg font-semibold text-white">
             {link.label}

@@ -266,48 +266,15 @@ export function executeCommand(
         appendSession: safe,
       };
 
-    case "exit":
-      if (ctx.agentMode) {
-        return {
-          entries: [
-            inputEntry(safe, {
-              kind: "text",
-              lines: ["Saindo do modo IA."],
-            }),
-          ],
-          action: "ai-agent-stop",
-          appendSession: safe,
-        };
-      }
-      break;
-
-    case "ai-agent":
-      if (joined.includes("--interact") || args.includes("--interact")) {
-        return {
-          entries: [
-            inputEntry(safe, {
-              kind: "text",
-              lines: [
-                "Modo IA (opcional). Pergunte sobre projetos ou stack.",
-                "Digite exit para voltar.",
-              ],
-            }),
-          ],
-          action: "ai-agent-start",
-          appendSession: safe,
-        };
-      }
-      break;
-
     default:
       return errorEntry(
         safe,
-        `Comando '${cmd}' não reconhecido. Digite help para ver atalhos.`,
+        "Comando não reconhecido. Digite help para ver atalhos.",
       );
   }
 
   return errorEntry(
     safe,
-    `Comando '${cmd}' não reconhecido. Digite help para ver atalhos.`,
+    "Comando não reconhecido. Digite help para ver atalhos.",
   );
 }

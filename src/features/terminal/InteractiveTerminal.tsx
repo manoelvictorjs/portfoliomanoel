@@ -2,7 +2,7 @@
 
 import { useSound } from "@/shared/providers/SoundProvider";
 import { MagneticButton } from "@/shared/ui/MagneticButton";
-import { useAgentChat } from "@/hooks/useAgentChat";
+import { safeOpenExternalUrl } from "@/lib/security/safe-open";
 import { executeCommand, formatPrompt } from "@/lib/terminal/engine";
 import { renderOutput } from "@/lib/terminal/outputs";
 import { sanitizeTerminalInput } from "@/lib/terminal/sanitize";
@@ -58,8 +58,6 @@ export function InteractiveTerminal({
   const [currentInput, setCurrentInput] = useState("");
   const [sessionCommands, setSessionCommands] = useState<string[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [agentMode, setAgentMode] = useState(false);
-  const agent = useAgentChat();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -73,7 +71,7 @@ export function InteractiveTerminal({
 
   useEffect(() => {
     scrollToBottom();
-  }, [history, agent.messages, scrollToBottom]);
+  }, [history, scrollToBottom]);
 
   useEffect(() => {
     return () => {
@@ -103,17 +101,19 @@ export function InteractiveTerminal({
         });
       }
 
-      if (result.openUrl) {
-        window.open(result.openUrl, "_blank", "noopener,noreferrer");
+      if (result.openUrl && !safeOpenExternalUrl(result.openUrl)) {
+        setHistory((prev) => [
+          ...prev,
+          {
+            output: {
+              kind: "text",
+              lines: ["Link bloqueado por política de segurança."],
+            },
+            type: "error",
+          },
+        ]);
       }
 
-      if (result.action === "ai-agent-start") {
-        setAgentMode(true);
-        agent.reset();
-      }
-      if (result.action === "ai-agent-stop") {
-        setAgentMode(false);
-      }
       if (result.action === "scroll-skills") {
         document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" });
       }
@@ -136,7 +136,7 @@ export function InteractiveTerminal({
         blip();
       }
     },
-    [agent, blip],
+    [blip],
   );
 
   const runCommand = useCallback(
@@ -148,44 +148,13 @@ export function InteractiveTerminal({
 
       tick();
 
-      if (agentMode) {
-        if (safe.toLowerCase() === "exit") {
-          setAgentMode(false);
-          setHistory((prev) => [
-            ...prev,
-            {
-              command: safe,
-              output: {
-                kind: "text",
-                lines: ["Encerrando IA-Agent. Voltando ao shell."],
-              },
-              type: "input",
-            },
-          ]);
-          return;
-        }
-        void agent.send(safe);
-        setCurrentInput("");
-        blip();
-        return;
-      }
-
       const result = executeCommand(safe, {
         sessionHistory: sessionCommands,
-        agentMode,
       });
       applyResult(safe, result);
       setCurrentInput("");
     },
-    [
-      agent,
-      agentMode,
-      applyResult,
-      isTyping,
-      sessionCommands,
-      tick,
-      blip,
-    ],
+    [applyResult, isTyping, sessionCommands, tick],
   );
 
   const typeThenRun = useCallback(
@@ -229,7 +198,7 @@ export function InteractiveTerminal({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "ArrowUp" && sessionCommands.length > 0 && !agentMode) {
+    if (e.key === "ArrowUp" && sessionCommands.length > 0) {
       e.preventDefault();
       setCurrentInput(sessionCommands[sessionCommands.length - 1] ?? "");
     }
@@ -242,7 +211,6 @@ export function InteractiveTerminal({
   };
 
   const shellPrompt = formatPrompt();
-  const prompt = agentMode ? "IA-Agent $ " : shellPrompt;
 
   return (
     <motion.div
@@ -320,38 +288,12 @@ export function InteractiveTerminal({
               </div>
             </motion.div>
           ))}
-
-          {agentMode &&
-            agent.messages.map((msg, i) => (
-              <motion.div
-                key={`agent-${i}-${msg.content.slice(0, 12)}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mb-2"
-              >
-                <p className="text-zinc-500">
-                  <span className="text-purple-400/90">
-                    {msg.role === "user" ? "you@IA-Agent" : "IA-Agent"}
-                  </span>
-                  <span className="text-zinc-200 ml-2">{msg.content}</span>
-                </p>
-              </motion.div>
-            ))}
-
-          {agentMode && agent.pending && (
-            <p className="animate-pulse text-purple-400/70 text-[10px]">
-              ▸ agent thinking…
-            </p>
-          )}
-          {agent.error && (
-            <p className="text-amber-400/90 text-[10px]">{agent.error}</p>
-          )}
         </AnimatePresence>
       </div>
 
       <form onSubmit={handleSubmit} className="mt-2 flex items-center gap-2">
         <span className="shrink-0 font-mono text-[11px] text-emerald-400/90">
-          {prompt}
+          {shellPrompt}
         </span>
         <div className="relative flex min-w-0 flex-1 items-center">
           <input
@@ -362,7 +304,7 @@ export function InteractiveTerminal({
             onFocus={() => setExpanded(true)}
             readOnly={isTyping}
             className="w-full bg-transparent font-mono text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
-            placeholder={agentMode ? "pergunte ao agente…" : "email · projetos · status"}
+            placeholder="email · projetos · status"
             aria-label="Comando do terminal"
             autoComplete="off"
             spellCheck={false}
@@ -375,7 +317,7 @@ export function InteractiveTerminal({
       </form>
 
       <p className="mt-2 font-mono text-[10px] text-zinc-600">
-        {agentMode ? "modo IA · exit para sair" : "ações reais · ↑ histórico da sessão"}
+        ações reais · ↑ histórico da sessão
       </p>
     </motion.div>
   );

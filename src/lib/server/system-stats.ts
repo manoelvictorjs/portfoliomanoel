@@ -41,12 +41,14 @@ function fallbackStats(reason?: string): SystemStatsPayload {
   };
 }
 
+const isVercel = Boolean(process.env.VERCEL);
+
 export async function getSystemStats(): Promise<SystemStatsPayload> {
   const vps = await fetchFromVps<SystemStatsPayload>("/system-stats");
   if (vps) return { ...vps, source: "vps" };
 
-  if (process.env.NEXT_RUNTIME === "edge") {
-    return fallbackStats("edge-runtime");
+  if (process.env.NEXT_RUNTIME === "edge" || isVercel) {
+    return fallbackStats(isVercel ? "vercel-serverless" : "edge-runtime");
   }
 
   try {
