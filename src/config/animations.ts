@@ -2,6 +2,16 @@
  * Tokens de animação reutilizáveis — evita magic numbers espalhados nos componentes.
  */
 
+/** Intro de boot — delay proposital + ritmo do typewriter */
+export const INTRO_BOOT = {
+  initialDelayMs: 750,
+  logLineMs: 340,
+  charMs: 22,
+  afterCodeMs: 650,
+  minTotalMs: 4800,
+  reducedTotalMs: 900,
+} as const;
+
 /** Scroll: distância em px para resetar trilha de ícones / estado “lit” */
 export const SCROLL_TOP_RESET_PX = 48;
 

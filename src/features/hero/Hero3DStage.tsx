@@ -24,8 +24,8 @@ type Props = {
 
 export function Hero3DStage({ children, introDone, backLayer }: Props) {
   const { preferLightEffects } = useDeviceProfile();
-  const reduced = useReducedMotion();
-  const light = preferLightEffects || reduced;
+  const reducedMotion = useReducedMotion() ?? false;
+  const light = preferLightEffects || reducedMotion;
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -88,7 +88,7 @@ export function Hero3DStage({ children, introDone, backLayer }: Props) {
       )}
 
       <motion.div
-        className="relative z-10"
+        className="relative z-10 pointer-events-auto"
         initial={light ? { opacity: 0, y: 24 } : { opacity: 0, rotateX: 18, y: 60, scale: 0.92 }}
         animate={
           introDone

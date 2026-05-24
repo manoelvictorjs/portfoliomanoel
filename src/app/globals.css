@@ -342,6 +342,73 @@ body {
   border-top: 1px solid rgba(45, 212, 191, 0.2);
 }
 
+/* ——— Boot intro (console + editor) ——— */
+.boot-console,
+.boot-editor {
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(6, 10, 18, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 28px 64px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(16px);
+}
+
+.boot-console-chrome,
+.boot-editor-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.55rem 0.85rem;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.boot-dot {
+  height: 0.65rem;
+  width: 0.65rem;
+  border-radius: 9999px;
+}
+
+.boot-console-body {
+  max-height: min(28vh, 200px);
+  overflow: hidden;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.boot-editor-code {
+  max-height: min(32vh, 220px);
+  overflow: hidden;
+  padding: 0.85rem 1rem 1rem;
+  color: #c4c8d4;
+}
+
+.boot-cursor {
+  display: inline-block;
+  width: 0.45em;
+  height: 1.05em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: #2dd4bf;
+  animation: boot-cursor-blink 1s step-end infinite;
+}
+
+@keyframes boot-cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.boot-progress-fill {
+  background: linear-gradient(90deg, #2dd4bf, #38bdf8, #a78bfa);
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.45);
+}
+
 .scroll-reveal-section {
   transform-style: preserve-3d;
   backface-visibility: hidden;

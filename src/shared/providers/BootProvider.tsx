@@ -1,5 +1,6 @@
 "use client";
 
+import { INTRO_BOOT } from "@/config";
 import {
   createContext,
   useCallback,
@@ -21,7 +22,7 @@ type BootContextValue = {
 
 const BootContext = createContext<BootContextValue | null>(null);
 
-const INTRO_KEY = "portfolio-intro-v2";
+const INTRO_KEY = "portfolio-intro-v3";
 
 function shouldSkipIntro(): boolean {
   if (typeof window === "undefined") return false;
@@ -44,7 +45,10 @@ export function BootProvider({ children }: { children: ReactNode }) {
       const frameId = requestAnimationFrame(() => setIntroComplete(true));
       return () => cancelAnimationFrame(frameId);
     }
-    const failsafe = window.setTimeout(() => completeIntro(), 2200);
+    const failsafe = window.setTimeout(
+      () => completeIntro(),
+      INTRO_BOOT.minTotalMs + 2500,
+    );
     return () => window.clearTimeout(failsafe);
   }, [completeIntro]);
 

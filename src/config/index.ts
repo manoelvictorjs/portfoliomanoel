@@ -2,6 +2,7 @@
 
 export { SITE_SECTIONS, MARKETING_SECTION_ORDER, type SiteSectionId } from "./site";
 export {
+  INTRO_BOOT,
   SCROLL_TOP_RESET_PX,
   VIEWPORT_CENTER_RATIO,
   TILT_PRESETS,

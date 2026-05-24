@@ -94,10 +94,7 @@ export function HeroSection() {
               </motion.div>
             </motion.div>
 
-            <div
-              className="flex justify-center lg:justify-end"
-              style={{ transform: "translateZ(48px)" }}
-            >
+            <div className="relative z-30 flex justify-center lg:justify-end">
               <ProfileCard introDone={introComplete} />
             </div>
           </div>

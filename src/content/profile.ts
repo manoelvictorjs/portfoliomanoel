@@ -17,15 +17,15 @@ export const profile = {
   title: "Full Stack · DevOps · IA Aplicada",
   tagline:
     "Da liderança na indústria naval à engenharia de software — APIs, containers e entrega com ownership.",
-  email: process.env.NEXT_PUBLIC_DEV_EMAIL ?? defaults.email,
-  phone: process.env.NEXT_PUBLIC_PHONE ?? defaults.phone,
-  phoneE164: process.env.NEXT_PUBLIC_PHONE_E164 ?? defaults.phoneE164,
+  email: process.env.NEXT_PUBLIC_DEV_EMAIL?.trim() || defaults.email,
+  phone: process.env.NEXT_PUBLIC_PHONE?.trim() || defaults.phone,
+  phoneE164: process.env.NEXT_PUBLIC_PHONE_E164?.trim() || defaults.phoneE164,
   githubUsername:
-    process.env.NEXT_PUBLIC_GITHUB_USERNAME ?? defaults.githubUsername,
+    process.env.NEXT_PUBLIC_GITHUB_USERNAME?.trim() || defaults.githubUsername,
   github:
-    process.env.NEXT_PUBLIC_GITHUB_URL ??
-    `https://github.com/${defaults.githubUsername}`,
-  linkedin: process.env.NEXT_PUBLIC_LINKEDIN_URL ?? defaults.linkedin,
+    process.env.NEXT_PUBLIC_GITHUB_URL?.trim() ||
+    `https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME?.trim() || defaults.githubUsername}`,
+  linkedin: process.env.NEXT_PUBLIC_LINKEDIN_URL?.trim() || defaults.linkedin,
   ciBadgeUrl:
     process.env.NEXT_PUBLIC_CI_BADGE_URL ??
     `https://github.com/${defaults.githubUsername}/${defaults.portfolioRepo}/actions`,
