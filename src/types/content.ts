@@ -46,3 +46,73 @@ export type ProfileSummary = {
     uptimeMindset: string;
   };
 };
+
+/** Onde um download pode aparecer na UI */
+export type DownloadPlacement =
+  | "hero"
+  | "nav"
+  | "contact-card"
+  | "terminal";
+
+/** Definição estática — href/filename podem ser sobrescritos por env */
+export type DownloadDefinition = {
+  id: string;
+  label: string;
+  defaultHref: string;
+  defaultFilename: string;
+  hrefEnvKey?: string;
+  filenameEnvKey?: string;
+  mimeType: "application/pdf";
+  placements: DownloadPlacement[];
+  terminalCommands?: string[];
+  card?: {
+    eyebrow: string;
+    /** `{firstName}` substituído pelo primeiro nome do perfil */
+    titleTemplate: string;
+    description: string;
+  };
+};
+
+/** Download pronto para UI / terminal (após resolver env) */
+export type ResolvedDownload = {
+  id: string;
+  label: string;
+  href: string;
+  filename: string;
+  mimeType: DownloadDefinition["mimeType"];
+  isExternal: boolean;
+  placements: DownloadPlacement[];
+  terminalCommands: string[];
+  card?: DownloadDefinition["card"];
+};
+
+export type ContactLink = {
+  id: string;
+  label: string;
+  description: string;
+  href: string;
+  icon: string;
+  accent: string;
+  opensInNewTab: boolean;
+};
+
+export type SiteNavLink = {
+  id: string;
+  label: string;
+  href: string;
+};
+
+export type ScrollCta = {
+  id: string;
+  label: string;
+  href: string;
+  variant: "primary" | "ghost" | "link";
+};
+
+export type SectionHeaderContent = {
+  number: string;
+  label: string;
+  title: string;
+  subtitle: string;
+  align?: "left" | "center";
+};

@@ -1,3 +1,5 @@
+import type { ProfileSummary } from "@/types/content";
+
 const defaults = {
   name: "Manoel Victor",
   birthYear: 1999,
@@ -29,13 +31,6 @@ export const profile = {
   ciBadgeUrl:
     process.env.NEXT_PUBLIC_CI_BADGE_URL ??
     `https://github.com/${defaults.githubUsername}/${defaults.portfolioRepo}/actions`,
-  /** Path em /public ou URL HTTPS (NEXT_PUBLIC_RESUME_URL) */
-  resumePath:
-    process.env.NEXT_PUBLIC_RESUME_URL?.trim() ||
-    "/curriculo-manoel-victor.pdf",
-  resumeFilename:
-    process.env.NEXT_PUBLIC_RESUME_FILENAME?.trim() ||
-    "Manoel-Victor-Curriculo.pdf",
 };
 
 export function getAge(referenceYear = new Date().getFullYear()): number {
@@ -57,8 +52,6 @@ export function getWhatsAppUrl(
   if (override) return override;
   return `https://wa.me/${profile.phoneE164}?text=${encodeURIComponent(message)}`;
 }
-
-import type { ProfileSummary } from "@/types/content";
 
 export const professionalSummary: ProfileSummary = {
   headline: "Engenheiro de software orientado a entrega",

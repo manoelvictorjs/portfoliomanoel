@@ -13,6 +13,7 @@ describe("executeCommand", () => {
     if (text?.kind === "text") {
       expect(text.lines.some((l) => l.includes("email"))).toBe(true);
       expect(text.lines.some((l) => l.includes("ping"))).toBe(true);
+      expect(text.lines.some((l) => l.includes("curriculo"))).toBe(true);
     }
   });
 
@@ -31,9 +32,9 @@ describe("executeCommand", () => {
     expect(result.openUrl).toMatch(/linkedin/i);
   });
 
-  it("curriculo triggers resume download", () => {
+  it("curriculo triggers catalog download", () => {
     const result = executeCommand("curriculo", baseCtx);
-    expect(result.downloadResume).toBe(true);
+    expect(result.downloadId).toBe("resume");
   });
 
   it("projetos returns projects list and scroll", () => {

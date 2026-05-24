@@ -42,8 +42,8 @@ export type CommandResult = {
   copyText?: string;
   /** Abre URL em nova aba (noopener) */
   openUrl?: string;
-  /** Inicia download do currículo PDF */
-  downloadResume?: boolean;
+  /** ID do arquivo em `content/downloads.ts` */
+  downloadId?: string;
 };
 
 export type RenderedHistoryEntry = {

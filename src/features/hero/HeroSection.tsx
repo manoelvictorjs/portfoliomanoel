@@ -7,13 +7,12 @@
 import { SITE_SECTIONS } from "@/config";
 import { profile } from "@/content/profile";
 import { completedProjects } from "@/content/projects";
+import { HeroActionBar } from "@/features/content-ui";
 import { HeroFloatingTech } from "@/features/hero/HeroFloatingTech";
 import { Hero3DStage } from "@/features/hero/Hero3DStage";
 import { ProfileCard } from "@/features/hero/ProfileCard";
 import { useDeviceProfile } from "@/hooks/useDeviceProfile";
 import { useBoot } from "@/shared/providers/BootProvider";
-import { ResumeDownloadButton } from "@/shared/ui/ResumeDownloadButton";
-import { ScrollButton } from "@/shared/ui/ScrollButton";
 import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "@/lib/motion";
 
@@ -63,20 +62,8 @@ export function HeroSection() {
                 de ponta a ponta. Código testado, deploy previsível, resultado mensurável.
               </motion.p>
 
-              <motion.div
-                variants={staggerItem}
-                className="mt-10 flex flex-wrap items-center gap-5"
-              >
-            <ScrollButton href={`#${SITE_SECTIONS.projects}`} variant="primary">
-              Ver projetos
-            </ScrollButton>
-            <ResumeDownloadButton variant="ghost" />
-            <ScrollButton href={`#${SITE_SECTIONS.techDomain}`} variant="link">
-              Stack & código
-            </ScrollButton>
-            <ScrollButton href={`#${SITE_SECTIONS.contact}`} variant="link">
-                  Contato
-                </ScrollButton>
+              <motion.div variants={staggerItem}>
+                <HeroActionBar />
               </motion.div>
 
               <motion.div
@@ -110,7 +97,9 @@ export function HeroSection() {
             aria-label="Rolar para stack"
             style={{ transform: "translateX(-50%) translateZ(32px)" }}
           >
-            <span className="text-[10px] font-medium uppercase tracking-[0.2em]">Scroll</span>
+            <span className="text-[10px] font-medium uppercase tracking-[0.2em]">
+              Scroll
+            </span>
             <span className="h-8 w-px bg-gradient-to-b from-zinc-500 to-transparent" />
           </motion.a>
         </div>

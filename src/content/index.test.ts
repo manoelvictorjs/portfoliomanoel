@@ -8,5 +8,9 @@ describe("content barrel", () => {
     expect(content.skillsShowcase.length).toBeGreaterThan(0);
     expect(content.heroFloatingBadges.length).toBeGreaterThan(0);
     expect(content.techMarqueeItems.length).toBeGreaterThan(0);
+    expect(content.getDownloadById("resume")).toBeDefined();
+    expect(content.getContactLinks().length).toBeGreaterThanOrEqual(4);
+    expect(content.siteNavLinks.length).toBeGreaterThan(0);
+    expect(content.heroScrollCtas.length).toBeGreaterThan(0);
   });
 });

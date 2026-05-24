@@ -60,14 +60,17 @@ export function isSafeProjectLiveUrl(href: string): boolean {
   return isSafeHttpsUrl(href);
 }
 
-/** PDF do currículo — path local em /public ou URL HTTPS pública. */
-export function isSafeResumeHref(href: string): boolean {
+/** Download de arquivo — path local `.pdf` em /public ou URL HTTPS pública. */
+export function isSafeDownloadHref(href: string): boolean {
   const trimmed = href.trim();
   if (trimmed.startsWith("/")) {
     return /^\/[\w.-]+\.pdf$/i.test(trimmed) && !trimmed.includes("..");
   }
   return isSafeHttpsUrl(trimmed);
 }
+
+/** @deprecated Use isSafeDownloadHref */
+export const isSafeResumeHref = isSafeDownloadHref;
 
 /** Origem HTTPS do proxy VPS — sem path, sem credenciais, sem rede interna. */
 export function resolveVpsApiOrigin(rawBase: string | undefined): string | null {

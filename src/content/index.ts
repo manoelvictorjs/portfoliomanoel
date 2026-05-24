@@ -8,13 +8,44 @@ export {
   professionalSummary,
 } from "./profile";
 
+export { readPublicEnv } from "./env";
+
+export {
+  downloadCatalog,
+  resolveDownload,
+  getAllDownloads,
+  getDownloadById,
+  getDownloadsForPlacement,
+  getDownloadByTerminalCommand,
+  formatDownloadCardTitle,
+  validateDownloadCatalog,
+} from "./downloads";
+
+export { getContactLinks, getContactLinkById } from "./contact-links";
+
+export { siteNavLinks, getSiteNavLinkById } from "./site-navigation";
+export { heroScrollCtas } from "./hero-ctas";
+export { contactSectionContent } from "./contact-section";
+
 export {
   projects,
   completedProjects,
   inProgressProjects,
 } from "./projects";
 
-export type { Project, ProjectKind, ProjectStatus, ProjectTab } from "@/types/content";
+export type {
+  Project,
+  ProjectKind,
+  ProjectStatus,
+  ProjectTab,
+  DownloadDefinition,
+  ResolvedDownload,
+  DownloadPlacement,
+  ContactLink,
+  SiteNavLink,
+  ScrollCta,
+  SectionHeaderContent,
+} from "@/types/content";
 
 export { skillsShowcase } from "./skills-showcase";
 export type { SkillId, SkillShowcase } from "./skills-showcase";

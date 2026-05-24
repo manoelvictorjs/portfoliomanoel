@@ -2,7 +2,8 @@
 
 import { useSound } from "@/shared/providers/SoundProvider";
 import { MagneticButton } from "@/shared/ui/MagneticButton";
-import { triggerResumeDownload } from "@/lib/resume/download";
+import { getDownloadById } from "@/content/downloads";
+import { triggerDownload } from "@/lib/downloads";
 import { safeOpenExternalUrl } from "@/lib/security/safe-open";
 import { executeCommand, formatPrompt } from "@/lib/terminal/engine";
 import { renderOutput } from "@/lib/terminal/outputs";
@@ -102,19 +103,22 @@ export function InteractiveTerminal({
         });
       }
 
-      if (result.downloadResume && !triggerResumeDownload()) {
-        setHistory((prev) => [
-          ...prev,
-          {
-            output: {
-              kind: "text",
-              lines: [
-                "Currículo indisponível. Coloque o PDF em public/curriculo-manoel-victor.pdf",
-              ],
+      if (result.downloadId) {
+        const file = getDownloadById(result.downloadId);
+        if (!file || !triggerDownload(file)) {
+          setHistory((prev) => [
+            ...prev,
+            {
+              output: {
+                kind: "text",
+                lines: [
+                  `Download indisponível (${result.downloadId}). Verifique public/ ou env.`,
+                ],
+              },
+              type: "error",
             },
-            type: "error",
-          },
-        ]);
+          ]);
+        }
       }
 
       if (result.openUrl && !safeOpenExternalUrl(result.openUrl)) {

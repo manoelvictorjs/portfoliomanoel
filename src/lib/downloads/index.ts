@@ -1,0 +1,1 @@
+export { triggerDownload } from "./trigger";

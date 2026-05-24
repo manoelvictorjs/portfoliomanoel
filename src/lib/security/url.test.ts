@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   isAllowedVpsPath,
   isPrivateOrLocalHost,
-  isSafeResumeHref,
+  isSafeDownloadHref,
   isSafeTerminalOpenUrl,
   resolveVpsApiOrigin,
 } from "./url";
@@ -38,10 +38,10 @@ describe("security/url", () => {
     ).toBeNull();
   });
 
-  it("allows safe resume paths", () => {
-    expect(isSafeResumeHref("/curriculo-manoel-victor.pdf")).toBe(true);
-    expect(isSafeResumeHref("/../etc/passwd")).toBe(false);
-    expect(isSafeResumeHref("javascript:x")).toBe(false);
+  it("allows safe download paths", () => {
+    expect(isSafeDownloadHref("/curriculo-manoel-victor.pdf")).toBe(true);
+    expect(isSafeDownloadHref("/../etc/passwd")).toBe(false);
+    expect(isSafeDownloadHref("javascript:x")).toBe(false);
   });
 
   it("allowlists VPS paths", () => {

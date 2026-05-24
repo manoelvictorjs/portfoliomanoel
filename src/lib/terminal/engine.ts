@@ -3,6 +3,10 @@
  * Novos comandos: lib/terminal/commands.ts · saídas ricas: outputs.tsx
  */
 
+import {
+  downloadCatalog,
+  getDownloadByTerminalCommand,
+} from "@/content/downloads";
 import { formatPhoneDisplay, getAge, getWhatsAppUrl, profile } from "@/content/profile";
 import type { CommandContext, CommandResult } from "./types";
 
@@ -11,7 +15,11 @@ const HELP_LINES = [
   "",
   "  Contato",
   "    contato          — dados + links clicáveis",
-  "    curriculo        — baixa currículo em PDF",
+  ...downloadCatalog.flatMap((d) =>
+    (d.terminalCommands ?? []).map(
+      (cmd) => `    ${cmd.padEnd(16)} — ${d.label.toLowerCase()}`,
+    ),
+  ),
   "    email            — copia e-mail para área de transferência",
   "    linkedin         — abre perfil LinkedIn",
   "    github           — abre repositórios no GitHub",
@@ -72,7 +80,20 @@ export function executeCommand(
   if (!safe) return { entries: [] };
 
   const { cmd, args } = parseInput(safe);
-  const joined = args.join(" ").toLowerCase();
+
+  const terminalDownload = getDownloadByTerminalCommand(cmd);
+  if (terminalDownload) {
+    return {
+      entries: [
+        inputEntry(safe, {
+          kind: "text",
+          lines: [`Iniciando download: ${terminalDownload.label}…`],
+        }),
+      ],
+      downloadId: terminalDownload.id,
+      appendSession: safe,
+    };
+  }
 
   switch (cmd) {
     case "help":
@@ -115,20 +136,6 @@ export function executeCommand(
     case "contato":
       return {
         entries: [inputEntry(safe, { kind: "component", id: "contact" })],
-        appendSession: safe,
-      };
-
-    case "curriculo":
-    case "cv":
-    case "resume":
-      return {
-        entries: [
-          inputEntry(safe, {
-            kind: "text",
-            lines: ["Iniciando download do currículo (PDF)…"],
-          }),
-        ],
-        downloadResume: true,
         appendSession: safe,
       };
 
