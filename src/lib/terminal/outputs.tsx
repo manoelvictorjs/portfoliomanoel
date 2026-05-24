@@ -32,7 +32,6 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 
 export function TerminalOutputView({
   id,
-  props = {},
 }: {
   id: OutputComponentId;
   props?: OutputProps;

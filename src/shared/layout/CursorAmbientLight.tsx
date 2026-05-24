@@ -15,7 +15,7 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 function parseTint(tint: string) {
   const [r, g, b] = tint.split(",").map((v) => parseInt(v.trim(), 10));
@@ -50,12 +50,15 @@ export function CursorAmbientLight() {
   const glow = useMotionTemplate`radial-gradient(circle 200px at ${springX}px ${springY}px, rgba(${springR}, ${springG}, ${springB}, 0.09), transparent 72%)`;
   const core = useMotionTemplate`radial-gradient(circle 28px at ${springX}px ${springY}px, rgba(${springR}, ${springG}, ${springB}, ${coreAlpha}), transparent 88%)`;
 
-  const applyTint = (tint: string) => {
-    const rgb = parseTint(tint);
-    r.set(rgb.r);
-    g.set(rgb.g);
-    b.set(rgb.b);
-  };
+  const applyTint = useCallback(
+    (tint: string) => {
+      const rgb = parseTint(tint);
+      r.set(rgb.r);
+      g.set(rgb.g);
+      b.set(rgb.b);
+    },
+    [r, g, b],
+  );
 
   useEffect(() => {
     const finePointer = window.matchMedia("(pointer: fine)");
@@ -91,7 +94,7 @@ export function CursorAmbientLight() {
       window.removeEventListener("mousedown", onClick);
       document.documentElement.removeEventListener("mouseleave", onLeave);
     };
-  }, [active, x, y, r, g, b, pulse]);
+  }, [active, x, y, pulse, applyTint]);
 
   if (!active) return null;
 

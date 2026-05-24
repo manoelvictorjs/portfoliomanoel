@@ -21,11 +21,11 @@ export function MarketingPage() {
   return (
     <main
       ref={scrollRoot}
-      className={isMobile ? "relative" : "page-3d-main relative"}
+      className={isMobile ? "relative" : "page-3d-main relative isolate"}
     >
       <PageFloatingTech scrollRoot={scrollRoot} />
 
-      <div className="relative z-10">
+      <div className="relative z-[2]">
         <HeroSection />
         <TechDomainSection />
         <SkillsShowcase />

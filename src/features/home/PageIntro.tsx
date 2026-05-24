@@ -20,9 +20,17 @@ export function PageIntro() {
 
     const doneTimer = window.setTimeout(() => completeIntro(), 1600);
 
+    const skipOnScroll = () => completeIntro();
+    window.addEventListener("wheel", skipOnScroll, { passive: true, once: true });
+    window.addEventListener("touchmove", skipOnScroll, { passive: true, once: true });
+    window.addEventListener("keydown", skipOnScroll, { once: true });
+
     return () => {
       window.clearInterval(lineTimer);
       window.clearTimeout(doneTimer);
+      window.removeEventListener("wheel", skipOnScroll);
+      window.removeEventListener("touchmove", skipOnScroll);
+      window.removeEventListener("keydown", skipOnScroll);
     };
   }, [introComplete, completeIntro]);
 
@@ -30,7 +38,7 @@ export function PageIntro() {
     <AnimatePresence>
       {!introComplete && (
         <motion.div
-          className="page-intro fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[var(--bg-deep)]"
+          className="page-intro pointer-events-none fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[var(--bg-deep)]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, rotateX: reduced ? 0 : -4 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}

@@ -190,7 +190,7 @@ export function PageFloatingTech({ scrollRoot }: Props) {
   }, [reduced]);
 
   useEffect(() => {
-    syncFromScroll();
+    const frameId = requestAnimationFrame(() => syncFromScroll());
 
     window.addEventListener("scroll", syncFromScroll, { passive: true });
     window.addEventListener("resize", syncFromScroll, { passive: true });
@@ -203,6 +203,7 @@ export function PageFloatingTech({ scrollRoot }: Props) {
     ro?.observe(root);
 
     return () => {
+      cancelAnimationFrame(frameId);
       window.removeEventListener("scroll", syncFromScroll);
       window.removeEventListener("resize", syncFromScroll);
       ro?.disconnect();
@@ -213,7 +214,7 @@ export function PageFloatingTech({ scrollRoot }: Props) {
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[9] min-h-full overflow-hidden"
+      className="pointer-events-none absolute inset-x-0 top-0 z-[1] min-h-full overflow-hidden"
       aria-hidden
     >
       <SnakeTrailSvg pathProgress={pathProgress} />

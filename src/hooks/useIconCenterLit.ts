@@ -17,23 +17,20 @@ export function useIconCenterLit(
   options: Options = {},
 ) {
   const { alwaysOn = false } = options;
-  const [lit, setLit] = useState(alwaysOn);
+  const [latched, setLatched] = useState(false);
 
   useEffect(() => {
-    if (alwaysOn) {
-      setLit(true);
-      return;
-    }
+    if (alwaysOn) return;
 
     const el = ref.current;
     if (!el) return;
 
-    let latched = false;
+    let latchedLocal = false;
 
     const sync = () => {
       if (window.scrollY <= SCROLL_TOP_RESET_PX) {
-        latched = false;
-        setLit(alwaysOn);
+        latchedLocal = false;
+        setLatched(false);
         return;
       }
 
@@ -42,21 +39,22 @@ export function useIconCenterLit(
       const viewportMid = window.innerHeight * VIEWPORT_CENTER_RATIO;
 
       if (centerY <= viewportMid) {
-        latched = true;
+        latchedLocal = true;
       }
 
-      setLit(latched);
+      setLatched(latchedLocal);
     };
 
-    sync();
+    const frameId = requestAnimationFrame(sync);
     window.addEventListener("scroll", sync, { passive: true });
     window.addEventListener("resize", sync, { passive: true });
 
     return () => {
+      cancelAnimationFrame(frameId);
       window.removeEventListener("scroll", sync);
       window.removeEventListener("resize", sync);
     };
-  }, [alwaysOn]);
+  }, [alwaysOn, ref]);
 
-  return lit;
+  return alwaysOn || latched;
 }

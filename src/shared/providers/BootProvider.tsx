@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -31,12 +32,21 @@ function shouldSkipIntro(): boolean {
 
 export function BootProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<SystemStatus>("offline");
-  const [introComplete, setIntroComplete] = useState(shouldSkipIntro);
+  const [introComplete, setIntroComplete] = useState(false);
 
   const completeIntro = useCallback(() => {
     sessionStorage.setItem(INTRO_KEY, "1");
     setIntroComplete(true);
   }, []);
+
+  useEffect(() => {
+    if (shouldSkipIntro()) {
+      const frameId = requestAnimationFrame(() => setIntroComplete(true));
+      return () => cancelAnimationFrame(frameId);
+    }
+    const failsafe = window.setTimeout(() => completeIntro(), 2200);
+    return () => window.clearTimeout(failsafe);
+  }, [completeIntro]);
 
   const boot = useCallback(() => {
     if (status === "healthy") return;

@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { codeSamples, type CodeLang } from "@/content/tech-code-samples";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDeviceProfile } from "@/hooks/useDeviceProfile";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const LANG_TAB: { id: CodeLang; label: string; color: string }[] = [
   { id: "typescript", label: "TypeScript", color: "#3178c6" },
@@ -106,48 +106,73 @@ function highlightLine(line: string, lang: CodeLang): ReactNode {
   });
 }
 
+function CodeLines({
+  lang,
+  lines,
+  visibleLines,
+}: {
+  lang: CodeLang;
+  lines: { text: string; delay?: number }[];
+  visibleLines: number;
+}) {
+  return (
+    <>
+      {lines.slice(0, visibleLines).map((line, idx) => (
+        <motion.div
+          key={`${lang}-${idx}`}
+          initial={{ opacity: 0, x: -4 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex gap-4 text-zinc-400"
+        >
+          <span className="w-6 shrink-0 select-none text-right text-zinc-600">
+            {idx + 1}
+          </span>
+          <span className="text-zinc-300">{highlightLine(line.text, lang)}</span>
+        </motion.div>
+      ))}
+    </>
+  );
+}
+
+function CodeLineTyping({
+  lineCount,
+  children,
+}: {
+  lineCount: number;
+  children: (visibleLines: number) => ReactNode;
+}) {
+  const [visibleLines, setVisibleLines] = useState(0);
+
+  useEffect(() => {
+    let i = 0;
+    const intervalId = window.setInterval(() => {
+      i += 1;
+      setVisibleLines(i);
+      if (i >= lineCount) window.clearInterval(intervalId);
+    }, 95);
+
+    return () => window.clearInterval(intervalId);
+  }, [lineCount]);
+
+  return <>{children(visibleLines)}</>;
+}
+
 export function AnimatedCodeEditor() {
   const { preferLightEffects } = useDeviceProfile();
   const [lang, setLang] = useState<CodeLang>("typescript");
-  const [visibleLines, setVisibleLines] = useState(0);
   const sample = codeSamples.find((s) => s.lang === lang)!;
-  const runTyping = useCallback(() => {
-    if (preferLightEffects) {
-      setVisibleLines(sample.lines.length);
-      return () => {};
-    }
-    setVisibleLines(0);
-    let i = 0;
-    const id = window.setInterval(() => {
-      i += 1;
-      setVisibleLines(i);
-      if (i >= sample.lines.length) window.clearInterval(id);
-    }, 95);
-    return () => window.clearInterval(id);
-  }, [sample.lines.length, preferLightEffects]);
+  const lineCount = sample.lines.length;
 
   useEffect(() => {
-    let stopTyping = () => {};
-    const t = window.setTimeout(() => {
-      stopTyping = runTyping();
-    }, 0);
-    return () => {
-      window.clearTimeout(t);
-      stopTyping();
-    };
-  }, [lang, runTyping]);
+    if (preferLightEffects) return;
 
-  useEffect(() => {
-    if (preferLightEffects) {
-      setVisibleLines(sample.lines.length);
-      return;
-    }
     const order: CodeLang[] = ["typescript", "javascript", "java", "go"];
-    const rotate = window.setInterval(() => {
+    const rotateId = window.setInterval(() => {
       setLang((l) => order[(order.indexOf(l) + 1) % order.length]);
     }, 8000);
-    return () => window.clearInterval(rotate);
-  }, [preferLightEffects, sample.lines.length]);
+
+    return () => window.clearInterval(rotateId);
+  }, [preferLightEffects]);
 
   return (
     <div
@@ -198,21 +223,23 @@ export function AnimatedCodeEditor() {
             exit={{ opacity: 0, x: lang === "typescript" ? 12 : -12 }}
             transition={{ duration: 0.35 }}
           >
-            {sample.lines.slice(0, visibleLines).map((line, idx) => (
-              <motion.div
-                key={`${lang}-${idx}`}
-                initial={{ opacity: 0, x: -4 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex gap-4 text-zinc-400"
-              >
-                <span className="w-6 shrink-0 select-none text-right text-zinc-600">
-                  {idx + 1}
-                </span>
-                <span className="text-zinc-300">
-                  {highlightLine(line.text, lang)}
-                </span>
-              </motion.div>
-            ))}
+            {preferLightEffects ? (
+              <CodeLines
+                lang={lang}
+                lines={sample.lines}
+                visibleLines={lineCount}
+              />
+            ) : (
+              <CodeLineTyping key={lang} lineCount={lineCount}>
+                {(visibleLines) => (
+                  <CodeLines
+                    lang={lang}
+                    lines={sample.lines}
+                    visibleLines={visibleLines}
+                  />
+                )}
+              </CodeLineTyping>
+            )}
             <span className="ml-10 inline-block h-4 w-2 animate-pulse bg-teal-400/80" />
           </motion.div>
         </AnimatePresence>
