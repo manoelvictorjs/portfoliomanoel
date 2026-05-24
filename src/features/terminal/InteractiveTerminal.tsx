@@ -1,14 +1,12 @@
 ﻿"use client";
 
-import { useBootOptional } from "@/shared/providers/BootProvider";
 import { useSound } from "@/shared/providers/SoundProvider";
 import { MagneticButton } from "@/shared/ui/MagneticButton";
 import { useAgentChat } from "@/hooks/useAgentChat";
 import { executeCommand, formatPrompt } from "@/lib/terminal/engine";
 import { renderOutput } from "@/lib/terminal/outputs";
 import { sanitizeTerminalInput } from "@/lib/terminal/sanitize";
-import type { HistoryEntry, TerminalPath } from "@/lib/terminal/types";
-import { playMechanicalClick } from "@/lib/sound/click";
+import type { HistoryEntry } from "@/lib/terminal/types";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   useCallback,
@@ -23,21 +21,19 @@ const WELCOME: HistoryEntry = {
   output: {
     kind: "text",
     lines: [
-      "Modo técnico — comandos extras para quem quer ver detalhes.",
-      'Digite "help" para ver a lista de comandos.',
+      "Atalhos reais — copiar e-mail, abrir links, ver projetos e testar APIs.",
+      'Digite help ou use os botões abaixo.',
     ],
   },
   type: "system",
 };
 
 const QUICK_CHIPS = [
-  { label: "📄 ver-bio", command: "bio" },
-  { label: "📊 system-stats", command: "system-stats" },
-  { label: "🐳 docker ps", command: "docker ps" },
-  { label: "📈 docker live", command: "docker stats --live" },
-  { label: "🌿 git live", command: "git log --live" },
-  { label: "🧪 run-tests", command: "run-tests" },
-  { label: "🤖 falar-com-ia", command: "ai-agent --interact" },
+  { label: "✉ E-mail", command: "email" },
+  { label: "WhatsApp", command: "whatsapp" },
+  { label: "Projetos", command: "projetos" },
+  { label: "Status", command: "status" },
+  { label: "LinkedIn", command: "linkedin" },
 ] as const;
 
 const TYPING_MS = 28;
@@ -56,16 +52,10 @@ export function InteractiveTerminal({
   injectedCommand,
   onInjected,
 }: Props) {
-  const bootCtx = useBootOptional();
-  const bootFn = bootCtx?.boot;
-  const boot = useCallback(() => {
-    bootFn?.();
-  }, [bootFn]);
   const { tick, blip } = useSound();
   const [expanded, setExpanded] = useState(embedded ?? false);
   const [history, setHistory] = useState<HistoryEntry[]>([WELCOME]);
   const [currentInput, setCurrentInput] = useState("");
-  const [path, setPath] = useState<TerminalPath>("~");
   const [sessionCommands, setSessionCommands] = useState<string[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [agentMode, setAgentMode] = useState(false);
@@ -98,10 +88,25 @@ export function InteractiveTerminal({
         return;
       }
 
-      if (result.action === "boot") {
-        playMechanicalClick();
-        boot();
+      if (result.copyText) {
+        void navigator.clipboard.writeText(result.copyText).catch(() => {
+          setHistory((prev) => [
+            ...prev,
+            {
+              output: {
+                kind: "text",
+                lines: ["Não foi possível copiar — use o link em contato."],
+              },
+              type: "error",
+            },
+          ]);
+        });
       }
+
+      if (result.openUrl) {
+        window.open(result.openUrl, "_blank", "noopener,noreferrer");
+      }
+
       if (result.action === "ai-agent-start") {
         setAgentMode(true);
         agent.reset();
@@ -123,7 +128,6 @@ export function InteractiveTerminal({
           ?.scrollIntoView({ behavior: "smooth" });
       }
 
-      if (result.path) setPath(result.path);
       if (result.appendSession) {
         setSessionCommands((prev) => [...prev, result.appendSession!]);
       }
@@ -132,7 +136,7 @@ export function InteractiveTerminal({
         blip();
       }
     },
-    [agent, boot, blip],
+    [agent, blip],
   );
 
   const runCommand = useCallback(
@@ -167,7 +171,6 @@ export function InteractiveTerminal({
       }
 
       const result = executeCommand(safe, {
-        path,
         sessionHistory: sessionCommands,
         agentMode,
       });
@@ -179,7 +182,6 @@ export function InteractiveTerminal({
       agentMode,
       applyResult,
       isTyping,
-      path,
       sessionCommands,
       tick,
       blip,
@@ -239,8 +241,8 @@ export function InteractiveTerminal({
     window.setTimeout(() => inputRef.current?.focus(), 150);
   };
 
-  const shellPrompt = formatPrompt(path);
-  const prompt = agentMode ? "IA-Agent:~$" : shellPrompt;
+  const shellPrompt = formatPrompt();
+  const prompt = agentMode ? "IA-Agent $ " : shellPrompt;
 
   return (
     <motion.div
@@ -256,7 +258,7 @@ export function InteractiveTerminal({
           <span className="h-3 w-3 rounded-full bg-amber-400/80" />
           <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
           <span className="ml-2 font-mono text-xs text-zinc-500">
-            {shellPrompt.replace("$", "")} — zsh
+            atalhos · portfolio
           </span>
           <button
             type="button"
@@ -360,7 +362,7 @@ export function InteractiveTerminal({
             onFocus={() => setExpanded(true)}
             readOnly={isTyping}
             className="w-full bg-transparent font-mono text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
-            placeholder={agentMode ? "pergunte ao agente…" : "help"}
+            placeholder={agentMode ? "pergunte ao agente…" : "email · projetos · status"}
             aria-label="Comando do terminal"
             autoComplete="off"
             spellCheck={false}
@@ -373,7 +375,7 @@ export function InteractiveTerminal({
       </form>
 
       <p className="mt-2 font-mono text-[10px] text-zinc-600">
-        LIVE API · SSE 2s · {agentMode ? "modo IA (exit para sair)" : "↑ histórico"}
+        {agentMode ? "modo IA · exit para sair" : "ações reais · ↑ histórico da sessão"}
       </p>
     </motion.div>
   );

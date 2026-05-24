@@ -1,8 +1,14 @@
-﻿export type SkillId =
+﻿/**
+ * Cards da seção “Detalhes por tecnologia”.
+ * Para nova skill: adicione um item aqui + ícone em SkillIcon.tsx (se necessário).
+ */
+
+export type SkillId =
   | "linux"
   | "docker"
   | "nodejs"
   | "typescript"
+  | "java"
   | "nextjs"
   | "postgres"
   | "postman"
@@ -11,7 +17,6 @@
 export type SkillShowcase = {
   id: SkillId;
   title: string;
-  icon: string;
   accent: string;
   glow: string;
   rhSummary: string;
@@ -22,7 +27,6 @@ export const skillsShowcase: SkillShowcase[] = [
   {
     id: "nextjs",
     title: "Next.js",
-    icon: "▲",
     accent: "#ededed",
     glow: "rgba(237,237,237,0.3)",
     rhSummary:
@@ -36,7 +40,6 @@ export const skillsShowcase: SkillShowcase[] = [
   {
     id: "nodejs",
     title: "Node.js",
-    icon: "⬢",
     accent: "#68a063",
     glow: "rgba(104,160,99,0.4)",
     rhSummary:
@@ -50,7 +53,6 @@ export const skillsShowcase: SkillShowcase[] = [
   {
     id: "typescript",
     title: "TypeScript",
-    icon: "TS",
     accent: "#3178c6",
     glow: "rgba(49,120,198,0.4)",
     rhSummary:
@@ -62,9 +64,21 @@ export const skillsShowcase: SkillShowcase[] = [
     ],
   },
   {
+    id: "java",
+    title: "Java",
+    accent: "#007396",
+    glow: "rgba(0,115,150,0.4)",
+    rhSummary:
+      "Base da graduação em Sistemas de Informação — POO, estruturas de dados, APIs e boas práticas que uso como fundamento em qualquer stack.",
+    techLog: [
+      "[javac] Compiling src/… OK",
+      "[jvm] OpenJDK 21 · heap 512m",
+      "[oop] classes · interfaces · collections",
+    ],
+  },
+  {
     id: "docker",
     title: "Docker",
-    icon: "🐳",
     accent: "#2496ed",
     glow: "rgba(36,150,237,0.4)",
     rhSummary:
@@ -78,7 +92,6 @@ export const skillsShowcase: SkillShowcase[] = [
   {
     id: "linux",
     title: "Linux / VPS",
-    icon: "🐧",
     accent: "#f59e0b",
     glow: "rgba(245,158,11,0.4)",
     rhSummary:
@@ -92,7 +105,6 @@ export const skillsShowcase: SkillShowcase[] = [
   {
     id: "postgres",
     title: "SQL / PostgreSQL",
-    icon: "🗄",
     accent: "#336791",
     glow: "rgba(51,103,145,0.4)",
     rhSummary:
@@ -106,7 +118,6 @@ export const skillsShowcase: SkillShowcase[] = [
   {
     id: "postman",
     title: "APIs REST",
-    icon: "⚡",
     accent: "#ff6c37",
     glow: "rgba(255,108,55,0.4)",
     rhSummary:
@@ -120,7 +131,6 @@ export const skillsShowcase: SkillShowcase[] = [
   {
     id: "ai",
     title: "Agentes IA",
-    icon: "✦",
     accent: "#a855f7",
     glow: "rgba(168,85,247,0.4)",
     rhSummary:

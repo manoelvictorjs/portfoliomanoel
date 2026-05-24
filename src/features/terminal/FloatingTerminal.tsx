@@ -4,18 +4,28 @@ import { InteractiveTerminal } from "@/features/terminal/InteractiveTerminal";
 import { useSound } from "@/shared/providers/SoundProvider";
 import { AnimatePresence, motion } from "framer-motion";
 import { springSnappy } from "@/lib/motion";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const QUICK_CHIPS = [
-  { label: "Bio", command: "bio" },
-  { label: "Ajuda", command: "help" },
-  { label: "Contato", command: "contato" },
+  { label: "E-mail", command: "email" },
+  { label: "Projetos", command: "projetos" },
+  { label: "Status", command: "status" },
 ] as const;
+
+const SHOW_AFTER_SCROLL = 520;
 
 export function FloatingTerminal() {
   const [open, setOpen] = useState(false);
   const [inject, setInject] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
   const { tick } = useSound();
+
+  useEffect(() => {
+    const sync = () => setVisible(window.scrollY > SHOW_AFTER_SCROLL);
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    return () => window.removeEventListener("scroll", sync);
+  }, []);
 
   const runChip = useCallback(
     (command: string) => {
@@ -31,13 +41,19 @@ export function FloatingTerminal() {
     setOpen((v) => !v);
   }, [tick]);
 
+  if (!visible && !open) return null;
+
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3"
+    >
       <AnimatePresence>
         {open && (
           <motion.div
             role="dialog"
-            aria-label="Terminal modo técnico"
+            aria-label="Atalhos do portfólio"
             initial={{ opacity: 0, y: 20, scale: 0.92 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.94 }}
@@ -46,10 +62,10 @@ export function FloatingTerminal() {
           >
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
               <div>
-                <p className="font-display text-sm font-semibold text-white">
-                  Console
+                <p className="font-display text-sm font-semibold text-white">Atalhos</p>
+                <p className="text-[11px] text-zinc-500">
+                  Copiar contato · abrir links · testar APIs
                 </p>
-                <p className="text-[11px] text-zinc-500">Opcional · para curiosos tech</p>
               </div>
               <button
                 type="button"
@@ -60,7 +76,7 @@ export function FloatingTerminal() {
                 ✕
               </button>
             </div>
-            <div className="flex gap-2 border-b border-white/10 px-4 py-3">
+            <div className="flex flex-wrap gap-2 border-b border-white/10 px-4 py-3">
               {QUICK_CHIPS.map((c) => (
                 <button
                   key={c.command}
@@ -86,14 +102,14 @@ export function FloatingTerminal() {
       <motion.button
         type="button"
         onClick={toggle}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.04 }}
+        whileTap={{ scale: 0.96 }}
         aria-expanded={open}
-        className="surface-elevated flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-zinc-200 shadow-lg"
+        className="surface-elevated flex items-center gap-2 rounded-full border border-white/10 px-5 py-3 text-sm font-medium text-zinc-200 shadow-lg"
       >
         <span className="text-teal-400">⌘</span>
-        {open ? "Fechar console" : "Console"}
+        {open ? "Fechar" : "Atalhos"}
       </motion.button>
-    </div>
+    </motion.div>
   );
 }

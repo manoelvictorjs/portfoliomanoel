@@ -1,4 +1,4 @@
-export type CodeLang = "typescript" | "javascript" | "go";
+export type CodeLang = "typescript" | "javascript" | "java" | "go";
 
 export type CodeSample = {
   lang: CodeLang;
@@ -73,6 +73,43 @@ export const codeSamples: CodeSample[] = [
     ],
   },
   {
+    lang: "java",
+    label: "Java",
+    file: "InvertTree.java",
+    accent: "#007396",
+    glow: "rgba(0, 115, 150, 0.4)",
+    lines: [
+      { text: "import java.util.ArrayDeque;" },
+      { text: "import java.util.Queue;" },
+      { text: "" },
+      { text: "/** Árvore binária — inversão iterativa O(n) */" },
+      { text: "class TreeNode {" },
+      { text: "  int val;" },
+      { text: "  TreeNode left, right;" },
+      { text: "  TreeNode(int val) { this.val = val; }" },
+      { text: "}" },
+      { text: "" },
+      { text: "class Solution {" },
+      { text: "  public TreeNode invertTree(TreeNode root) {" },
+      { text: "    if (root == null) return null;" },
+      { text: "    Queue<TreeNode> q = new ArrayDeque<>();" },
+      { text: "    q.add(root);" },
+      { text: "    while (!q.isEmpty()) {" },
+      { text: "      TreeNode node = q.poll();" },
+      { text: "      TreeNode tmp = node.left;" },
+      { text: "      node.left = node.right;" },
+      { text: "      node.right = tmp;" },
+      { text: "      if (node.left != null) q.add(node.left);" },
+      { text: "      if (node.right != null) q.add(node.right);" },
+      { text: "    }" },
+      { text: "    return root;" },
+      { text: "  }" },
+      { text: "}" },
+      { text: "" },
+      { text: "// javac InvertTree.java  →  base da graduação ✓" },
+    ],
+  },
+  {
     lang: "go",
     label: "Go",
     file: "invert_tree.go",
@@ -136,6 +173,7 @@ export const infraExamples = [
 export const techMarqueeItems = [
   { label: "TypeScript", color: "#3178c6" },
   { label: "JavaScript", color: "#f7df1e" },
+  { label: "Java", color: "#007396" },
   { label: "Go", color: "#00ADD8" },
   { label: "Linux", color: "#facc15" },
   { label: "Docker", color: "#2496ed" },

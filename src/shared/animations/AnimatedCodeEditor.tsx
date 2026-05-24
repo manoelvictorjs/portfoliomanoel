@@ -3,11 +3,13 @@
 import type { CSSProperties, ReactNode } from "react";
 import { codeSamples, type CodeLang } from "@/content/tech-code-samples";
 import { AnimatePresence, motion } from "framer-motion";
+import { useDeviceProfile } from "@/hooks/useDeviceProfile";
 import { useCallback, useEffect, useState } from "react";
 
 const LANG_TAB: { id: CodeLang; label: string; color: string }[] = [
   { id: "typescript", label: "TypeScript", color: "#3178c6" },
   { id: "javascript", label: "JavaScript", color: "#f7df1e" },
+  { id: "java", label: "Java", color: "#007396" },
   { id: "go", label: "Go", color: "#00ADD8" },
 ];
 
@@ -30,16 +32,29 @@ function highlightLine(line: string, lang: CodeLang): ReactNode {
         ]
       : lang === "go"
         ? ["package", "type", "func", "return", "if", "nil", "struct", "int"]
-        : [
-            "function",
-            "const",
-            "return",
-            "if",
-            "while",
-            "null",
-            "/**",
-            "*/",
-          ];
+        : lang === "java"
+          ? [
+              "import",
+              "class",
+              "public",
+              "int",
+              "return",
+              "if",
+              "while",
+              "null",
+              "new",
+              "this",
+            ]
+          : [
+              "function",
+              "const",
+              "return",
+              "if",
+              "while",
+              "null",
+              "/**",
+              "*/",
+            ];
 
   const parts = line.split(/(\s+|[{}();,:'"])/g).filter(Boolean);
 
@@ -69,7 +84,10 @@ function highlightLine(line: string, lang: CodeLang): ReactNode {
       part === "TreeNode" ||
       part === "invertTree" ||
       part === "invertRecursive" ||
-      part === "ApiResult"
+      part === "ApiResult" ||
+      part === "Solution" ||
+      part === "ArrayDeque" ||
+      part === "Queue"
     ) {
       return (
         <span key={i} className="text-sky-300">
@@ -89,11 +107,15 @@ function highlightLine(line: string, lang: CodeLang): ReactNode {
 }
 
 export function AnimatedCodeEditor() {
+  const { preferLightEffects } = useDeviceProfile();
   const [lang, setLang] = useState<CodeLang>("typescript");
   const [visibleLines, setVisibleLines] = useState(0);
   const sample = codeSamples.find((s) => s.lang === lang)!;
-
   const runTyping = useCallback(() => {
+    if (preferLightEffects) {
+      setVisibleLines(sample.lines.length);
+      return () => {};
+    }
     setVisibleLines(0);
     let i = 0;
     const id = window.setInterval(() => {
@@ -102,7 +124,7 @@ export function AnimatedCodeEditor() {
       if (i >= sample.lines.length) window.clearInterval(id);
     }, 95);
     return () => window.clearInterval(id);
-  }, [sample.lines.length]);
+  }, [sample.lines.length, preferLightEffects]);
 
   useEffect(() => {
     let stopTyping = () => {};
@@ -116,12 +138,16 @@ export function AnimatedCodeEditor() {
   }, [lang, runTyping]);
 
   useEffect(() => {
-    const order: CodeLang[] = ["typescript", "javascript", "go"];
+    if (preferLightEffects) {
+      setVisibleLines(sample.lines.length);
+      return;
+    }
+    const order: CodeLang[] = ["typescript", "javascript", "java", "go"];
     const rotate = window.setInterval(() => {
       setLang((l) => order[(order.indexOf(l) + 1) % order.length]);
     }, 8000);
     return () => window.clearInterval(rotate);
-  }, []);
+  }, [preferLightEffects, sample.lines.length]);
 
   return (
     <div
@@ -199,7 +225,9 @@ export function AnimatedCodeEditor() {
             ? "strict · generics · satisfies"
             : lang === "go"
               ? "simples · idiomático"
-              : "iterativo + recursivo"}
+              : lang === "java"
+                ? "POO · BFS · collections"
+                : "iterativo + recursivo"}
         </span>
       </div>
     </div>

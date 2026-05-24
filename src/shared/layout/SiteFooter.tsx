@@ -10,12 +10,17 @@ import { fadeUp } from "@/lib/motion";
 
 export function SiteFooter() {
   return (
-    <footer id="contact" className="relative overflow-hidden border-t border-white/5">
+    <footer
+      id="contact"
+      className="relative overflow-hidden border-t border-white/5"
+      data-cursor-tint="45, 212, 191"
+    >
       <ContactSocialBackdrop />
       <CompileSection variant="scale" className="relative z-10 px-5 py-24 md:px-10 lg:px-16 lg:py-32">
         <div className="mx-auto max-w-6xl">
           <SectionHeader
-            number="04"
+            number="05"
+            label="Contato"
             title="Vamos construir algo juntos?"
             subtitle="Escolha o canal que preferir — resposta rápida e conversa direta, sem burocracia."
             align="center"
@@ -40,7 +45,7 @@ export function SiteFooter() {
               {profile.name}
             </p>
             <p className="text-sm text-zinc-500">
-              © {new Date().getFullYear()} · Feito com Next.js & muito café
+              © {new Date().getFullYear()} · Next.js · TypeScript · VPS
             </p>
           </motion.div>
         </div>

@@ -1,182 +1,67 @@
 ﻿"use client";
 
 import {
-  aluraStats,
   aluraTracks,
-  programmingLanguages,
   udemyTracks,
   universityEducation,
 } from "@/content/learning";
 import { CompileSection } from "@/shared/ui/CompileSection";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
-import { motion } from "framer-motion";
-import { staggerContainer, staggerItem } from "@/lib/motion";
+
+const aluraSummary = aluraTracks
+  .flatMap((t) => t.courses.map((c) => c.name))
+  .slice(0, 8)
+  .join(" · ");
 
 export function LearningShowcase() {
+  const udemy = udemyTracks[0];
+
   return (
     <CompileSection
       id="learning"
       variant="right"
-      className="relative px-5 py-24 md:px-10 lg:px-16 lg:py-32"
+      className="relative px-5 py-20 md:px-10 lg:px-16 lg:py-28"
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-3xl">
         <SectionHeader
           number="03"
-          title="Formação contínua"
-          subtitle="Graduação, cursos e linguagens — base acadêmica aliada à prática em projetos."
+          label="Formação"
+          title="Formação acadêmica e cursos"
+          subtitle="Graduação em andamento e cursos que complementam a prática em projetos."
         />
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid gap-6 lg:grid-cols-2"
-        >
-          <motion.div
-            variants={staggerItem}
-            className="surface-elevated rounded-[var(--radius-xl)] p-8 lg:col-span-2"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-teal-400">
-                  Graduação · {universityEducation.startYear}
-                </p>
-                <h3 className="font-display mt-2 text-2xl font-bold text-white">
-                  {universityEducation.institution}
-                </h3>
-                <p className="mt-2 text-zinc-400">{universityEducation.degree}</p>
-              </div>
-              <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-sm text-emerald-300">
-                {universityEducation.status}
-              </span>
-            </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              {universityEducation.curriculumAreas.map((area) => (
-                <div
-                  key={area}
-                  className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3 text-sm text-zinc-300"
-                >
-                  <span className="text-teal-400">◆</span>
-                  {area}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div variants={staggerItem} className="glass-card rounded-[var(--radius-xl)] p-8">
-            <h3 className="font-display text-lg font-semibold text-white">
-              Linguagens
+        <div className="space-y-10">
+          <section>
+            <p className="text-eyebrow mb-2">Graduação</p>
+            <h3 className="font-display text-xl font-semibold text-white">
+              {universityEducation.institution}
             </h3>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {programmingLanguages.map((lang) => (
-                <span
-                  key={lang}
-                  className="rounded-xl border border-teal-500/20 bg-teal-500/10 px-4 py-2 text-sm font-medium text-teal-100/90"
-                >
-                  {lang}
-                </span>
-              ))}
-            </div>
-          </motion.div>
+            <p className="mt-1 text-zinc-400">{universityEducation.degree}</p>
+            <p className="mt-3 text-sm text-zinc-500">
+              {universityEducation.status} · desde {universityEducation.startYear}
+              {" · "}
+              {universityEducation.curriculumAreas.join(" · ")}
+            </p>
+          </section>
 
-          <motion.div variants={staggerItem} className="glass-card rounded-[var(--radius-xl)] p-8">
-            <h3 className="font-display text-lg font-semibold text-white">Udemy</h3>
-            {udemyTracks.map((track) => (
-              <div key={track.id} className="mt-4">
-                <p className="text-sm font-medium text-zinc-200">{track.title}</p>
-                <p className="mt-1 text-xs text-zinc-500">{track.subtitle}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {track.topics.map((topic) => (
-                    <span
-                      key={topic}
-                      className="rounded-lg border border-violet-500/20 bg-violet-500/10 px-2.5 py-1 text-[10px] text-violet-200"
-                    >
-                      {topic}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </motion.div>
-
-          <motion.div
-            variants={staggerItem}
-            className="glass-card overflow-hidden rounded-[var(--radius-xl)] p-0 lg:col-span-2"
-          >
-            <div className="border-b border-violet-500/20 bg-gradient-to-r from-violet-950/50 via-[#0d1117] to-teal-950/30 p-8">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-500/30 bg-violet-500/15 text-2xl font-bold text-violet-200">
-                    A
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl font-bold text-white">
-                      Alura · Formação contínua
-                    </h3>
-                    <p className="mt-1 text-sm text-zinc-400">
-                      Trilhas de fundamentos, infraestrutura e dados — aplicadas em
-                      projetos reais.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="rounded-xl border border-violet-500/25 bg-violet-500/10 px-4 py-2 text-center">
-                    <p className="font-display text-2xl font-bold text-white">
-                      {aluraStats.totalCourses}
-                    </p>
-                    <p className="text-[10px] text-violet-300/80">cursos</p>
-                  </div>
-                  <div className="rounded-xl border border-teal-500/25 bg-teal-500/10 px-4 py-2 text-center">
-                    <p className="font-display text-2xl font-bold text-white">
-                      {aluraStats.tracks}
-                    </p>
-                    <p className="text-[10px] text-teal-300/80">trilhas</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid gap-6 p-8 lg:grid-cols-3">
-              {aluraTracks.map((track) => (
-                <div
-                  key={track.category}
-                  className="rounded-2xl border border-white/5 bg-white/[0.02] p-5"
-                  style={{ borderColor: `${track.accent}22` }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{track.icon}</span>
-                    <div>
-                      <p
-                        className="text-xs font-semibold uppercase tracking-wider"
-                        style={{ color: track.accent }}
-                      >
-                        {track.category}
-                      </p>
-                      <p className="mt-1 text-xs text-zinc-500">{track.description}</p>
-                    </div>
-                  </div>
-                  <ul className="mt-5 space-y-4">
-                    {track.courses.map((course) => (
-                      <li
-                        key={course.name}
-                        className="border-b border-white/5 pb-4 last:border-0 last:pb-0"
-                      >
-                        <p className="flex items-start gap-2 text-sm font-medium text-zinc-200">
-                          <span className="text-teal-500">✓</span>
-                          {course.name}
-                        </p>
-                        <p className="mt-1 pl-5 text-xs leading-relaxed text-zinc-500">
-                          {course.detail}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </motion.div>
+          <section className="border-t border-white/8 pt-10">
+            <p className="text-eyebrow mb-4">Cursos</p>
+            <ul className="space-y-4 text-sm leading-relaxed text-zinc-400">
+              {udemy && (
+                <li>
+                  <span className="font-medium text-zinc-200">Udemy — </span>
+                  {udemy.title}. {udemy.subtitle}
+                </li>
+              )}
+              <li>
+                <span className="font-medium text-zinc-200">Alura — </span>
+                Trilhas de fundamentos, APIs, Linux, Docker, Node e Next.js. Destaques:{" "}
+                {aluraSummary}
+                {aluraTracks.flatMap((t) => t.courses).length > 8 ? "…" : ""}
+              </li>
+            </ul>
+          </section>
+        </div>
       </div>
     </CompileSection>
   );

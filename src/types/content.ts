@@ -1,4 +1,7 @@
-/** Contratos da camada de conteúdo (fonte única para UI + terminal) */
+/**
+ * Contratos da camada de conteúdo (fonte única para UI + terminal).
+ * Ao criar entidade nova: defina o tipo aqui antes de popular content/*.ts
+ */
 
 export type ProjectTab = "business" | "engineering";
 

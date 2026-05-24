@@ -1,33 +1,38 @@
 ﻿"use client";
 
+/**
+ * Ícones de tecnologia no fundo da página + trilha SVG animada no scroll.
+ * Acendimento: progresso do scroll × posição Y de cada badge (snake-path).
+ */
+
+import { SCROLL_TOP_RESET_PX } from "@/config";
 import {
   pageFloatingSnippets,
   pageSnakeTrail,
   type FloatingTechBadge,
 } from "@/content/floating-tech";
+import { resolveSkillIconId, SkillIconShell } from "@/shared/ui/SkillIcon";
 import {
-  buildOrthogonalSnakePath,
+  buildDirectSnakePath,
   computeNodeThresholds,
+  computeScrollThresholdsFromLayout,
+  computeSnakeLitMap,
+  getPageScrollProgress,
+  mapScrollToPathProgress,
   type SnakePoint,
 } from "@/lib/snake-path";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
-import type { RefObject } from "react";
+import { useDeviceProfile } from "@/hooks/useDeviceProfile";
+import { motion, useReducedMotion } from "framer-motion";
+import { useCallback, useEffect, useState, type RefObject } from "react";
 
 const SNAKE_POINTS: SnakePoint[] = pageSnakeTrail.map((b) => ({
   x: b.x ?? 50,
   y: b.y ?? 50,
 }));
 
-const SNAKE_PATH = buildOrthogonalSnakePath(SNAKE_POINTS);
-const NODE_THRESHOLDS = computeNodeThresholds(SNAKE_POINTS);
+const SNAKE_PATH = buildDirectSnakePath(SNAKE_POINTS);
+const PATH_THRESHOLDS = computeNodeThresholds(SNAKE_POINTS);
+const SCROLL_THRESHOLDS = computeScrollThresholdsFromLayout(SNAKE_POINTS);
 
 type Props = {
   scrollRoot: RefObject<HTMLElement | null>;
@@ -47,7 +52,7 @@ function CodeSnippet({
   return (
     <motion.div
       initial={{ opacity: 0 }}
-      animate={{ opacity: [0.15, 0.4, 0.15] }}
+      animate={{ opacity: [0.1, 0.28, 0.1] }}
       transition={{ duration: 4 + delay, repeat: Infinity, delay }}
       className={`pointer-events-none absolute hidden font-mono text-[10px] sm:block lg:text-xs ${position}`}
       style={{ color }}
@@ -59,89 +64,63 @@ function CodeSnippet({
 
 function SnakeBadge({
   badge,
-  index,
-  progress,
+  lit,
 }: {
   badge: FloatingTechBadge;
-  index: number;
-  progress: MotionValue<number>;
+  lit: boolean;
 }) {
-  const threshold = NODE_THRESHOLDS[index] ?? 0;
   const isSm = badge.size === "sm";
   const x = badge.x ?? 50;
   const y = badge.y ?? 50;
-
-  const opacity = useTransform(progress, (p) => {
-    if (p >= threshold) return 1;
-    if (index === 0) return 0.45 + p * 4;
-    return 0.2;
-  });
-
-  const scale = useTransform(progress, (p) => {
-    const next = NODE_THRESHOLDS[index + 1] ?? 1.01;
-    const isHead = p >= threshold && p < next;
-    if (isHead) return 1.12;
-    return p >= threshold ? 1.04 : 0.9;
-  });
-
-  const boxShadow = useTransform(progress, (p) =>
-    p >= threshold
-      ? `0 0 40px ${badge.color}99, 0 0 72px ${badge.color}44`
-      : `0 0 10px ${badge.color}18`,
-  );
-
-  const borderColor = useTransform(progress, (p) =>
-    p >= threshold ? `${badge.color}bb` : `${badge.color}33`,
-  );
-
-  const pulse = useTransform(progress, (p) => {
-    const next = NODE_THRESHOLDS[index + 1] ?? 1;
-    return p >= threshold && p < threshold + (next - threshold) * 0.35 ? 0.5 : 0;
-  });
+  const iconId = resolveSkillIconId(badge.id);
 
   return (
-    <motion.div
-      className="floating-tech-badge pointer-events-none absolute hidden -translate-x-1/2 -translate-y-1/2 sm:block"
-      style={{ left: `${x}%`, top: `${y}%`, opacity, scale }}
+    <div
+      className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 sm:block"
+      style={{ left: `${x}%`, top: `${y}%` }}
     >
       <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{
-          duration: badge.duration,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: badge.delay,
+        className={`relative flex items-center gap-2.5 rounded-2xl border backdrop-blur-md ${
+          isSm ? "px-2.5 py-2" : "px-3 py-2.5"
+        }`}
+        animate={{
+          opacity: lit ? 1 : 0.38,
+          scale: lit ? 1.08 : 0.92,
+          borderColor: lit ? "rgba(255,255,255,0.35)" : `${badge.color}40`,
+          backgroundColor: lit ? "rgba(8,12,20,0.9)" : "rgba(8,12,20,0.5)",
+          boxShadow: lit
+            ? `0 0 0 1px ${badge.color}99, 0 12px 44px ${badge.color}66`
+            : `0 0 20px ${badge.color}18`,
         }}
-        className={`relative rounded-2xl border backdrop-blur-md ${isSm ? "px-3 py-2" : "px-4 py-3"}`}
-        style={{
-          borderColor,
-          backgroundColor: `${badge.color}18`,
-          boxShadow,
-        }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        style={{ transformStyle: "preserve-3d" }}
       >
-        <span
-          className={`font-display block font-bold ${isSm ? "text-lg" : "text-2xl"}`}
-          style={{ color: badge.color }}
+        {iconId ? (
+          <SkillIconShell
+            id={iconId}
+            variant="badge"
+            className="shrink-0 border-white/15 bg-black/40"
+          />
+        ) : (
+          <span
+            className={`font-display font-bold ${isSm ? "text-sm" : "text-base"}`}
+            style={{ color: badge.color }}
+          >
+            {badge.label}
+          </span>
+        )}
+        <p
+          className={`font-medium leading-tight text-zinc-200 ${isSm ? "text-[10px]" : "text-[11px]"}`}
+          style={{ opacity: lit ? 1 : 0.65 }}
         >
-          {badge.label}
-        </span>
-        <p className={`text-zinc-500 ${isSm ? "text-[9px]" : "text-[10px]"}`}>{badge.name}</p>
-        <motion.span
-          className="pointer-events-none absolute -inset-1 rounded-2xl"
-          style={{
-            opacity: pulse,
-            boxShadow: `0 0 28px ${badge.color}`,
-          }}
-        />
+          {badge.name}
+        </p>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 
-function SnakeTrailSvg({ progress }: { progress: MotionValue<number> }) {
-  const pathLength = useTransform(progress, [0, 1], [0, 1]);
-  const haloOpacity = useTransform(progress, [0, 0.05, 1], [0.15, 0.35, 0.45]);
-
+function SnakeTrailSvg({ pathProgress }: { pathProgress: number }) {
   return (
     <svg
       className="absolute inset-0 h-full w-full"
@@ -150,25 +129,17 @@ function SnakeTrailSvg({ progress }: { progress: MotionValue<number> }) {
       aria-hidden
     >
       <defs>
-        <linearGradient id="snake-trail-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#2dd4bf" />
-          <stop offset="50%" stopColor="#38bdf8" />
-          <stop offset="100%" stopColor="#c084fc" />
+        <linearGradient id="snake-trail-grad" x1="0%" y1="0%" x2="50%" y2="100%">
+          <stop offset="0%" stopColor="#5eead4" />
+          <stop offset="100%" stopColor="#7dd3fc" />
         </linearGradient>
-        <filter id="snake-glow" x="-80%" y="-80%" width="260%" height="260%">
-          <feGaussianBlur stdDeviation="0.65" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
       </defs>
 
       <path
         d={SNAKE_PATH}
         fill="none"
-        stroke="rgba(45, 212, 191, 0.07)"
-        strokeWidth={0.6}
+        stroke="rgba(255,255,255,0.06)"
+        strokeWidth={0.35}
         strokeLinecap="round"
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
@@ -178,58 +149,77 @@ function SnakeTrailSvg({ progress }: { progress: MotionValue<number> }) {
         d={SNAKE_PATH}
         fill="none"
         stroke="url(#snake-trail-grad)"
-        strokeWidth={1}
+        strokeWidth={0.55}
         strokeLinecap="round"
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
-        filter="url(#snake-glow)"
-        style={{ pathLength, opacity: haloOpacity }}
-      />
-
-      <motion.path
-        d={SNAKE_PATH}
-        fill="none"
-        stroke="url(#snake-trail-grad)"
-        strokeWidth={0.45}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-        style={{ pathLength }}
+        initial={false}
+        animate={{ pathLength: pathProgress, opacity: litPathOpacity(pathProgress) }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
       />
     </svg>
   );
 }
 
+function litPathOpacity(progress: number) {
+  return 0.45 + progress * 0.35;
+}
+
 export function PageFloatingTech({ scrollRoot }: Props) {
+  const { isMobile } = useDeviceProfile();
   const reduced = useReducedMotion();
-  const fullProgress = useMotionValue(1);
+  const [litMap, setLitMap] = useState<Record<number, boolean>>({ 0: true });
+  const [pathProgress, setPathProgress] = useState(0);
 
-  const { scrollYProgress } = useScroll({
-    target: scrollRoot,
-    offset: ["start start", "end end"],
-  });
+  const syncFromScroll = useCallback(() => {
+    const atTop = window.scrollY <= SCROLL_TOP_RESET_PX;
+    const scroll = getPageScrollProgress();
 
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 70,
-    damping: 26,
-    restDelta: 0.001,
-  });
+    const nextLit = computeSnakeLitMap(scroll, SCROLL_THRESHOLDS, atTop);
+    setLitMap(nextLit);
 
-  const trailProgress = reduced ? fullProgress : smooth;
+    if (reduced) {
+      setPathProgress(1);
+      return;
+    }
+
+    const progress = atTop
+      ? 0
+      : mapScrollToPathProgress(scroll, SCROLL_THRESHOLDS, PATH_THRESHOLDS);
+    setPathProgress(progress);
+  }, [reduced]);
+
+  useEffect(() => {
+    syncFromScroll();
+
+    window.addEventListener("scroll", syncFromScroll, { passive: true });
+    window.addEventListener("resize", syncFromScroll, { passive: true });
+
+    const root = scrollRoot.current;
+    const ro =
+      root && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => syncFromScroll())
+        : null;
+    ro?.observe(root);
+
+    return () => {
+      window.removeEventListener("scroll", syncFromScroll);
+      window.removeEventListener("resize", syncFromScroll);
+      ro?.disconnect();
+    };
+  }, [scrollRoot, syncFromScroll]);
+
+  if (isMobile) return null;
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-0 min-h-full overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[9] min-h-full overflow-hidden"
       aria-hidden
     >
-      <div className="pointer-events-none absolute left-[8%] top-[20%] h-56 w-56 rounded-full bg-[#3178c6]/10 blur-[90px]" />
-      <div className="pointer-events-none absolute right-[6%] top-[35%] h-48 w-48 rounded-full bg-[#f7df1e]/8 blur-[80px]" />
-      <div className="pointer-events-none absolute left-[12%] top-[55%] h-52 w-52 rounded-full bg-[#2496ed]/10 blur-[85px]" />
-
-      <SnakeTrailSvg progress={trailProgress} />
+      <SnakeTrailSvg pathProgress={pathProgress} />
 
       {pageSnakeTrail.map((badge, i) => (
-        <SnakeBadge key={badge.id} badge={badge} index={i} progress={trailProgress} />
+        <SnakeBadge key={badge.id} badge={badge} lit={Boolean(litMap[i])} />
       ))}
 
       {pageFloatingSnippets.map((snippet, i) => (

@@ -114,10 +114,10 @@ Digite "skills" ou "cursos" para ver formação completa.`,
 
   "learning-path.json": JSON.stringify(learningPathJson, null, 2),
 
-  "README.md": `Living Dev Environment — terminal interativo do portfólio.
+  "README.md": `Atalhos do portfólio — ações reais no navegador.
 
-Comandos úteis:
-  help · bio · skills · docker ps · ls · cd projetos · contato`,
+Comandos:
+  email · linkedin · whatsapp · projetos · ping · status · contato`,
 };
 
 export const dockerPsRows = [
@@ -162,7 +162,7 @@ export const skillCategories = [
   },
   {
     name: "Linguagens & dados",
-    items: ["JavaScript", "TypeScript", "Go", "JSON", "PostgreSQL", "SQLite"],
+    items: ["Java", "JavaScript", "TypeScript", "Go", "JSON", "PostgreSQL", "SQLite"],
   },
   {
     name: "Infra / DevOps",
@@ -171,6 +171,7 @@ export const skillCategories = [
   {
     name: "Graduação (UNISUL · desde 2024)",
     items: [
+      "Java (UNISUL)",
       "Modelagem de software",
       "Programação de soluções computacionais",
       "Ambientes computacionais e conectividade",

@@ -4,7 +4,7 @@
   projectFiles,
   type VirtualFile,
 } from "@/content/terminal";
-import type { TerminalPath } from "./types";
+type TerminalPath = "~" | "~/projetos";
 
 export function listDirectory(path: TerminalPath): VirtualFile[] {
   if (path === "~") return homeFiles;

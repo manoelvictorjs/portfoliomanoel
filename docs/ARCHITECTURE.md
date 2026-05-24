@@ -5,20 +5,41 @@
 ```
 src/
 ├── app/              # Rotas Next.js + API (handlers finos)
-├── content/          # Dados estáticos (única fonte de copy)
-├── types/            # Contratos TypeScript
-├── features/         # UI por domínio
-│   ├── home/         # AppShell, MarketingPage, providers
-│   ├── hero/
-│   ├── skills/
-│   ├── projects/
-│   ├── contact/
-│   ├── learning/
-│   └── terminal/     # Console + widgets LIVE
+├── config/           # IDs de seção, presets de animação (sem copy)
+├── content/          # Dados estáticos — única fonte de textos/listas
+├── types/            # Contratos TypeScript compartilhados
+├── features/         # UI por domínio (hero, skills, terminal…)
 ├── shared/           # layout, ui, animations, providers
-├── lib/              # terminal (domínio) + server (infra)
-└── hooks/
+├── lib/              # terminal (domínio) + server (infra) + motion
+└── hooks/            # lógica React reutilizável
 ```
+
+## Fluxo de renderização
+
+```
+app/page.tsx
+  └── AppShell (features/home)
+        ├── AppProviders (boot, sound)
+        ├── PageIntro
+        ├── AmbientBackground, SiteNav, ScrollProgress
+        ├── MarketingPage
+        │     ├── PageFloatingTech (fundo)
+        │     └── Hero → Tech → Skills → Learning → Projects
+        ├── SiteFooter
+        └── EngineeringLayer (terminal lazy)
+```
+
+## Onde mudar o quê
+
+| Objetivo | Camada |
+|----------|--------|
+| Texto, projeto, skill | `content/` |
+| Nova seção na página | `features/` + `MarketingPage` + `config/site.ts` |
+| Comando do terminal | `lib/terminal/commands.ts` |
+| Animação global | `lib/motion.ts`, `config/animations.ts` |
+| Ícone de tecnologia | `shared/ui/SkillIcon.tsx` |
+
+Guia passo a passo: [MAINTENANCE.md](./MAINTENANCE.md).
 
 ## Shell
 

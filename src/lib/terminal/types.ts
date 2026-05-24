@@ -1,15 +1,14 @@
 import type { ReactNode } from "react";
 
-export type TerminalPath = "~" | "~/projetos";
-
 export type HistoryType = "input" | "system" | "error";
 
 export type OutputComponentId =
   | "bio"
   | "skills-table"
   | "contact"
-  | "docker-ps"
-  | "file-content"
+  | "projects-list"
+  | "ping-live"
+  | "site-status"
   | "system-stats-live"
   | "docker-stats-live"
   | "git-log-live"
@@ -27,7 +26,6 @@ export type HistoryEntry = {
 
 export type TerminalAction =
   | "clear"
-  | "boot"
   | "scroll-skills"
   | "scroll-learning"
   | "scroll-projects"
@@ -35,16 +33,18 @@ export type TerminalAction =
   | "ai-agent-stop";
 
 export type CommandContext = {
-  path: TerminalPath;
   sessionHistory: string[];
   agentMode?: boolean;
 };
 
 export type CommandResult = {
   entries: HistoryEntry[];
-  path?: TerminalPath;
   action?: TerminalAction;
   appendSession?: string;
+  /** Copia texto para a área de transferência no cliente */
+  copyText?: string;
+  /** Abre URL em nova aba (noopener) */
+  openUrl?: string;
 };
 
 export type RenderedHistoryEntry = {

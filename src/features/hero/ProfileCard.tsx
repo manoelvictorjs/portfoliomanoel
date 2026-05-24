@@ -1,124 +1,101 @@
 ﻿"use client";
 
+/** Card de perfil no hero — tilt 3D e camadas translateZ para profundidade. */
+
 import { universityEducation } from "@/content/learning";
 import { profile } from "@/content/profile";
-import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
-import Image from "next/image";
-import { useCallback } from "react";
+import { TILT_PRESETS } from "@/config";
+import { useDeviceProfile } from "@/hooks/useDeviceProfile";
+import { useTilt3D } from "@/hooks/useTilt3D";
 import { springSoft } from "@/lib/motion";
+import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 
 type Props = {
   introDone?: boolean;
 };
 
 export function ProfileCard({ introDone = true }: Props) {
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [10, -10]), {
-    stiffness: 200,
-    damping: 24,
+  const { preferLightEffects } = useDeviceProfile();
+  const reduced = useReducedMotion();
+  const light = preferLightEffects || reduced;
+  const { transform, onMouseMove, onMouseLeave } = useTilt3D({
+    ...TILT_PRESETS.profile,
+    disabled: light,
   });
-  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-12, 12]), {
-    stiffness: 200,
-    damping: 24,
-  });
-  const glareX = useTransform(mx, [-0.5, 0.5], ["20%", "80%"]);
-  const glareY = useTransform(my, [-0.5, 0.5], ["25%", "75%"]);
-  const glare = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(45,212,191,0.14), transparent 55%)`;
-
-  const onMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      mx.set((e.clientX - rect.left) / rect.width - 0.5);
-      my.set((e.clientY - rect.top) / rect.height - 0.5);
-    },
-    [mx, my],
-  );
-
-  const onLeave = useCallback(() => {
-    mx.set(0);
-    my.set(0);
-  }, [mx, my]);
 
   return (
     <motion.div
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      initial={{ opacity: 0, y: 48, rotateX: 16, scale: 0.9 }}
+      initial={reduced ? { opacity: 0, y: 32 } : { opacity: 0, y: 32, rotateX: 12, rotateY: -6 }}
       animate={
         introDone
-          ? { opacity: 1, y: 0, rotateX: 0, scale: 1 }
-          : { opacity: 0, y: 60, rotateX: 20, scale: 0.85 }
+          ? reduced
+            ? { opacity: 1, y: 0 }
+            : { opacity: 1, y: 0, rotateX: 0, rotateY: 0 }
+          : { opacity: 0, y: 40 }
       }
       transition={{ ...springSoft, delay: introDone ? 0.35 : 0 }}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-      }}
-      className="profile-card-3d surface-elevated relative w-full max-w-[340px] overflow-hidden rounded-[var(--radius-xl)] p-8"
+      className="profile-card-3d perspective-[900px]"
+      onMouseMove={light ? undefined : onMouseMove}
+      onMouseLeave={light ? undefined : onMouseLeave}
     >
       <motion.div
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{ background: glare }}
-        aria-hidden
-      />
-
-      <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-teal-500/20 blur-3xl" />
-
-      <div className="relative z-10 mx-auto w-fit">
-        <div className="relative h-44 w-44 overflow-hidden rounded-2xl border-2 border-teal-500/30 shadow-lg shadow-teal-500/15 ring-4 ring-teal-500/10">
-          <Image
-            src={profile.photo}
-            alt={`Foto de ${profile.name}`}
-            fill
-            sizes="176px"
-            className="object-cover object-top"
-            priority
-          />
+        className="surface-elevated relative w-full max-w-[340px] overflow-hidden rounded-[var(--radius-xl)] border border-white/8 p-8"
+        style={
+          transform
+            ? { transform, transformStyle: "preserve-3d" }
+            : { transformStyle: "preserve-3d" }
+        }
+      >
+        <div className="mx-auto w-fit" style={{ transform: "translateZ(20px)" }}>
+          <div className="relative h-44 w-44 overflow-hidden rounded-2xl border border-white/10 bg-[#0a0e16] shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
+            <Image
+              src={profile.photo}
+              alt={`Foto de ${profile.name}`}
+              fill
+              sizes="176px"
+              className="object-cover object-top"
+              priority
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="relative z-10 mt-8 text-center">
-        <h2 className="font-display text-2xl font-bold text-white">{profile.name}</h2>
-        <p className="mt-2 text-sm font-medium text-teal-300/90">{profile.title}</p>
-        <div className="mt-4 rounded-xl border border-sky-500/25 bg-sky-500/10 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-sky-300/90">
-            🎓 Faculdade
-          </p>
-          <p className="mt-1 text-sm font-medium text-zinc-200">
-            {universityEducation.institution}
-          </p>
-          <p className="mt-1 text-xs text-zinc-500">
-            {universityEducation.degree} · desde {universityEducation.startYear}
+        <div className="mt-8 text-center" style={{ transform: "translateZ(12px)" }}>
+          <h2 className="font-display text-2xl font-bold text-white">{profile.name}</h2>
+          <p className="mt-2 text-sm font-medium text-teal-300/90">{profile.title}</p>
+          <p className="mt-4 text-sm text-zinc-500">
+            {universityEducation.degree} · {universityEducation.institution}
           </p>
         </div>
-      </div>
 
-      <div className="relative z-10 mt-6 grid grid-cols-2 gap-2">
-        <a
-          href={profile.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-ghost rounded-xl py-2.5 text-center text-xs font-medium"
+        <div
+          className="mt-6 grid grid-cols-2 gap-2"
+          style={{ transform: "translateZ(8px)" }}
         >
-          LinkedIn
-        </a>
-        <a
-          href={profile.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-ghost rounded-xl py-2.5 text-center text-xs font-medium"
-        >
-          GitHub
-        </a>
-        <a
-          href={`mailto:${profile.email}`}
-          className="btn-primary col-span-2 rounded-xl py-2.5 text-center text-xs"
-        >
-          {profile.email}
-        </a>
-      </div>
+          <a
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost rounded-xl py-2.5 text-center text-xs font-medium"
+          >
+            LinkedIn
+          </a>
+          <a
+            href={profile.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost rounded-xl py-2.5 text-center text-xs font-medium"
+          >
+            GitHub
+          </a>
+          <a
+            href={`mailto:${profile.email}`}
+            className="btn-primary col-span-2 rounded-xl py-2.5 text-center text-xs"
+          >
+            {profile.email}
+          </a>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }

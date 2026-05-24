@@ -1,3 +1,9 @@
+/**
+ * Badges flutuantes (hero, editor, trilha no scroll).
+ * - position: classes Tailwind absolutas (hero/editor)
+ * - x/y: percentual 0–100 (pageSnakeTrail, ordem = percurso da cobrinha)
+ */
+
 export type FloatingTechBadge = {
   id: string;
   label: string;
@@ -49,6 +55,16 @@ export const heroFloatingBadges: FloatingTechBadge[] = [
     position: "right-[5%] top-[14%]",
     delay: 0.3,
     duration: 5.8,
+    size: "sm",
+  },
+  {
+    id: "java",
+    label: "Java",
+    name: "Java",
+    color: "#007396",
+    position: "left-[10%] top-[32%]",
+    delay: 0.7,
+    duration: 5.9,
     size: "sm",
   },
   {

@@ -147,30 +147,25 @@ export function ProjectsShowcase() {
       <div className="mx-auto max-w-6xl">
         <SectionHeader
           number="04"
-          title="Projetos"
-          subtitle="Cases finalizados e o que estou construindo agora — abra o card para detalhes ou visite o site."
+          label="Projetos"
+          title="Trabalho recente"
+          subtitle="Cases entregues e o que estou construindo agora."
         />
 
-        <div className="mb-14">
-          <h3 className="font-display text-xl font-semibold text-white">
-            Projetos finalizados
+        <div className="mb-12">
+          <h3 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
+            Finalizados
           </h3>
-          <p className="mt-2 text-sm text-zinc-500">
-            Entregues e em uso — e-commerce, cliente B2B e projeto de curso.
-          </p>
-          <div className="mt-8">
+          <div className="mt-6">
             <ProjectGrid items={completedProjects} onOpen={open} />
           </div>
         </div>
 
         <div>
-          <h3 className="font-display text-xl font-semibold text-white">
-            Em produção agora
+          <h3 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
+            Em andamento
           </h3>
-          <p className="mt-2 text-sm text-zinc-500">
-            Produtos em desenvolvimento ativo.
-          </p>
-          <div className="mt-8">
+          <div className="mt-6">
             <ProjectGrid items={inProgressProjects} onOpen={open} />
           </div>
         </div>

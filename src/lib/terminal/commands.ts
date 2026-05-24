@@ -5,5 +5,4 @@ export type {
   HistoryEntry,
   TerminalAction,
   TerminalOutput,
-  TerminalPath,
 } from "./types";

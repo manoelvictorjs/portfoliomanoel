@@ -35,7 +35,7 @@ export const journeyPhases: JourneyPhase[] = [
     level: "mastered",
     title: "Fundamentos",
     subtitle: "Base sólida para qualquer stack web moderna.",
-    skills: ["TypeScript", "JavaScript", "Git", "GitHub", "npm"],
+    skills: ["Java", "TypeScript", "JavaScript", "Git", "GitHub", "npm"],
   },
   {
     id: "frontend",

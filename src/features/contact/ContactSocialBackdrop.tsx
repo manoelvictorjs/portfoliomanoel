@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { getWhatsAppUrl, profile } from "@/content/profile";
+import { useDeviceProfile } from "@/hooks/useDeviceProfile";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -40,6 +41,8 @@ const ICONS = [
 ] as const;
 
 export function ContactSocialBackdrop() {
+  const { preferLightEffects } = useDeviceProfile();
+
   return (
     <div
       className="pointer-events-none absolute inset-x-0 bottom-0 h-[min(42vh,320px)] overflow-hidden"
@@ -58,30 +61,46 @@ export function ContactSocialBackdrop() {
           <motion.div
             key={icon.alt}
             className={`absolute bottom-0 ${icon.position}`}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={preferLightEffects ? false : { opacity: 0, y: 24 }}
+            whileInView={preferLightEffects ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: icon.delay }}
+            transition={preferLightEffects ? undefined : { duration: 0.7, delay: icon.delay }}
           >
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{
-                duration: 5 + icon.delay * 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="relative opacity-[0.07] blur-[0.5px] transition-opacity duration-300 md:opacity-[0.09]"
-              style={{ width: icon.size, height: icon.size }}
-            >
-              <Image
-                src={icon.src}
-                alt=""
-                fill
-                sizes={`${icon.size}px`}
-                className="object-contain"
-                draggable={false}
-              />
-            </motion.div>
+            {preferLightEffects ? (
+              <div
+                className="relative opacity-[0.07] md:opacity-[0.09]"
+                style={{ width: icon.size, height: icon.size }}
+              >
+                <Image
+                  src={icon.src}
+                  alt=""
+                  fill
+                  sizes={`${icon.size}px`}
+                  className="object-contain"
+                  draggable={false}
+                />
+              </div>
+            ) : (
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 5 + icon.delay * 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="relative opacity-[0.07] blur-[0.5px] transition-opacity duration-300 md:opacity-[0.09]"
+                style={{ width: icon.size, height: icon.size }}
+              >
+                <Image
+                  src={icon.src}
+                  alt=""
+                  fill
+                  sizes={`${icon.size}px`}
+                  className="object-contain"
+                  draggable={false}
+                />
+              </motion.div>
+            )}
           </motion.div>
         ))}
       </div>

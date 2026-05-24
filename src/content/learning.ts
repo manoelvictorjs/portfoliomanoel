@@ -6,6 +6,7 @@ export const universityEducation = {
   startYear: 2024,
   status: "Em andamento",
   curriculumAreas: [
+    "Java (base da graduação)",
     "Modelagem de software",
     "Programação de soluções computacionais",
     "Ambientes computacionais e conectividade",
@@ -14,11 +15,12 @@ export const universityEducation = {
 } as const;
 
 export const programmingLanguages = [
-  "JSON",
-  "Go",
-  "JavaScript",
+  "Java",
   "TypeScript",
+  "JavaScript",
+  "Go",
   "Python",
+  "JSON",
 ] as const;
 
 export const udemyTracks = [

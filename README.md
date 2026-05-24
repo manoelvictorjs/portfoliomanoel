@@ -44,7 +44,9 @@ src/
 └── types/        # contratos TypeScript
 ```
 
-Detalhes em [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+- Arquitetura: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Manutenção e escala: [docs/MAINTENANCE.md](docs/MAINTENANCE.md)
+- Conteúdo estático: [src/content/README.md](src/content/README.md)
 
 ## Testes e CI
 

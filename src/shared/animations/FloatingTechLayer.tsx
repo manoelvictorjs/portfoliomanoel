@@ -1,7 +1,13 @@
 ﻿"use client";
 
+/**
+ * Camada de badges + snippets de código flutuantes (variantes: hero | editor | ambient).
+ */
+
 import type { CSSProperties } from "react";
 import type { FloatingTechBadge } from "@/content/floating-tech";
+import { useDeviceProfile } from "@/hooks/useDeviceProfile";
+import { resolveSkillIconId, SkillIconShell } from "@/shared/ui/SkillIcon";
 import { motion } from "framer-motion";
 
 type Snippet = {
@@ -14,12 +20,15 @@ type Snippet = {
 function TechBadge({
   badge,
   variant,
+  staticMotion,
 }: {
   badge: FloatingTechBadge;
   variant: "hero" | "editor" | "ambient";
+  staticMotion?: boolean;
 }) {
   const isSm = badge.size === "sm";
   const isAmbient = variant === "ambient";
+  const iconId = resolveSkillIconId(badge.id);
   const hiddenOnMobile =
     variant === "hero" && !["ts", "js", "docker", "go", "react", "node"].includes(badge.id);
 
@@ -48,29 +57,39 @@ function TechBadge({
       }
     >
       <motion.div
-        animate={{ y: [0, -10, 0], rotate: [0, badge.id === "docker" ? 0 : 2, 0] }}
-        transition={{
-          duration: badge.duration,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: badge.delay,
-        }}
-        className={`rounded-2xl border backdrop-blur-md ${
-          isSm ? "px-3 py-2" : "px-4 py-3"
+        animate={
+          staticMotion ? undefined : { y: [0, -10, 0], rotate: [0, badge.id === "docker" ? 0 : 2, 0] }
+        }
+        transition={
+          staticMotion
+            ? undefined
+            : {
+                duration: badge.duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: badge.delay,
+              }
+        }
+        className={`flex items-center gap-2 rounded-2xl border border-white/10 bg-[#080c14]/80 backdrop-blur-md ${
+          isSm ? "px-2.5 py-2" : "px-3 py-2.5"
         }`}
         style={{
-          borderColor: `${badge.color}44`,
-          backgroundColor: `${badge.color}14`,
-          boxShadow: `0 0 36px ${badge.color}35`,
+          boxShadow: `0 8px 28px ${badge.color}28`,
         }}
       >
-        <span
-          className={`font-display font-bold ${isSm ? "text-lg" : "text-2xl"}`}
-          style={{ color: badge.color }}
-        >
-          {badge.label}
-        </span>
-        <p className={`text-zinc-500 ${isSm ? "text-[9px]" : "text-[10px]"}`}>{badge.name}</p>
+        {iconId ? (
+          <SkillIconShell id={iconId} variant="badge" className="shrink-0" />
+        ) : (
+          <span
+            className={`font-display font-bold ${isSm ? "text-sm" : "text-base"}`}
+            style={{ color: badge.color }}
+          >
+            {badge.label}
+          </span>
+        )}
+        <p className={`font-medium text-zinc-400 ${isSm ? "text-[9px]" : "text-[10px]"}`}>
+          {badge.name}
+        </p>
       </motion.div>
     </motion.div>
   );
@@ -79,11 +98,15 @@ function TechBadge({
 function CodeSnippet({
   snippet,
   variant,
+  staticMotion,
 }: {
   snippet: Snippet;
   variant: "hero" | "editor" | "ambient";
+  staticMotion?: boolean;
 }) {
   const peakOpacity = variant === "ambient" ? 0.45 : 0.55;
+
+  if (staticMotion) return null;
 
   return (
     <motion.div
@@ -102,7 +125,22 @@ function CodeSnippet({
   );
 }
 
-function AmbientGlow({ variant }: { variant: "hero" | "editor" | "ambient" }) {
+function AmbientGlow({
+  variant,
+  staticMotion,
+}: {
+  variant: "hero" | "editor" | "ambient";
+  staticMotion?: boolean;
+}) {
+  if (staticMotion) {
+    return (
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/3 h-48 w-48 -translate-x-1/2 rounded-full bg-teal-500/10 blur-[60px]"
+        aria-hidden
+      />
+    );
+  }
+
   if (variant === "ambient") {
     return (
       <>
@@ -164,6 +202,8 @@ export function FloatingTechLayer({
   badges: FloatingTechBadge[];
   snippets?: readonly Snippet[];
 }) {
+  const { preferLightEffects } = useDeviceProfile();
+
   return (
     <div
       className={`pointer-events-none absolute inset-0 overflow-hidden ${
@@ -171,12 +211,22 @@ export function FloatingTechLayer({
       }`}
       aria-hidden
     >
-      <AmbientGlow variant={variant} />
+      <AmbientGlow variant={variant} staticMotion={preferLightEffects} />
       {badges.map((badge) => (
-        <TechBadge key={badge.id} badge={badge} variant={variant} />
+        <TechBadge
+          key={badge.id}
+          badge={badge}
+          variant={variant}
+          staticMotion={preferLightEffects}
+        />
       ))}
       {snippets.map((snippet, i) => (
-        <CodeSnippet key={`${snippet.text}-${i}`} snippet={snippet} variant={variant} />
+        <CodeSnippet
+          key={`${snippet.text}-${i}`}
+          snippet={snippet}
+          variant={variant}
+          staticMotion={preferLightEffects}
+        />
       ))}
     </div>
   );
