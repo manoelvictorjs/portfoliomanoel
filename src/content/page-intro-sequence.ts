@@ -9,7 +9,7 @@ export const introBootLogs = [
   { text: "  ▲ Next.js 16 · Turbopack", tone: "accent" as const },
   { text: "  ○ Compiling / …", tone: "warn" as const },
   { text: "  ✓ Ready in 1.2s", tone: "success" as const },
-  { text: "  ○ Local: http://localhost:3000", tone: "accent" as const },
+  { text: "  ○ Local: https://portfoliomanoel.vercel.app/", tone: "accent" as const },
 ] as const;
 
 export const introBootCode = `// boot.ts — ambiente de desenvolvimento
